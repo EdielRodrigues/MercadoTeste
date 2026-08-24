@@ -55,7 +55,7 @@ html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system
 #profileModal .store-live,#profileModal .firebase-status,#profileModal [class*=firebase]{pointer-events:none;}
 
 
-/* V12.4 - Realtime Database status inside profile */
+/* V12.5 - Realtime Database status inside profile */
 .profile-db-status{
   display:flex;
   align-items:center;
@@ -89,19 +89,25 @@ html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system
 }
 
 
-/* V12.4 - ocultar indicador Firebase da tela principal */
+/* V12.5 - status Firebase visível somente dentro do Perfil */
 #firebaseStatus,
 #realtimeStatus,
 #dbStatus,
+#firebaseBadge,
+#connectionBadge,
 .firebase-status,
 .realtime-status,
 .db-status,
-.connection-status {
-  display: none !important;
-  visibility: hidden !important;
-  width: 0 !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
+.connection-status,
+.firebase-badge {
+  display:none !important;
+}
+#profileDbStatus.profile-db-status {
+  display:flex !important;
+  visibility:visible !important;
+  width:max-content !important;
+  height:auto !important;
+}
+@media(max-width:520px){
+  #profileDbStatus.profile-db-status{width:100% !important;}
 }

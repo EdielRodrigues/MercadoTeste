@@ -66,7 +66,7 @@ A senha administrativa não deve ficar gravada no HTML. O Firebase Authenticatio
 Dados sincronizados seguem a regra: Firebase Realtime Database confirma primeiro; somente depois produtos, pedidos e perfil são gravados no localStorage. Em caso de erro do banco, esses dados não são gravados localmente. Carrinho e favoritos continuam locais por serem preferências temporárias do aparelho.
 
 
-## V12.4 - correção do Perfil
+## V12.5 - correção do Perfil
 - Botão X do perfil corrigido para Android/touch.
 - Fechamento por pointerdown, touchstart, touchend e click.
 - Cabeçalho do perfil com prioridade de toque e z-index próprio.
