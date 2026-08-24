@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#087a3f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.svg" />
+  <title>Mercado Fácil PRO V12</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🛒</div>
+      <div><span class="eyebrow">SUPERMERCADO ONLINE</span><h1>Mercado Fácil <b>PRO</b></h1></div>
+    </div>
+    <div class="top-actions"><button class="icon-btn top-profile-btn" id="topProfileBtn" title="Meu perfil">👤</button><button class="icon-btn" id="installBtn" hidden title="Instalar aplicativo">⬇️</button></div>
+  </header>
+
+  <main>
+    <section class="customer-command">
+      <div class="customer-command-main">
+        <div class="customer-avatar">👤</div>
+        <div><span class="eyebrow dark">OLÁ, BEM-VINDO</span><strong id="homeCustomerName">Faça seu cadastro</strong><small id="homeCustomerHint">Entre no perfil para salvar seus dados</small></div>
+      </div>
+      <div class="store-live"><i></i><span>Mercado aberto</span></div>
+    </section>
+    <section class="delivery-card">
+      <div><span class="eyebrow dark">ENTREGAR EM</span><strong id="deliveryAddress">Cadastre seu endereço</strong></div>
+      <button id="addressBtn">Alterar</button>
+    </section>
+
+    <section class="hero">
+      <div><span class="badge">🔥 Ofertas do dia</span><h2>Economize no seu pedido</h2><p>Promoções, entrega rápida e compra pelo celular.</p><button class="hero-btn" id="showOffersBtn">Ver ofertas</button></div>
+      <div class="hero-emoji">🛍️</div>
+    </section>
+
+    <section class="quick-actions">
+      <button id="favoritesBtn">❤️<span>Favoritos</span></button>
+      <button id="repeatBtn">🔁<span>Comprar de novo</span></button>
+      <button id="freeShipBtn">🚚<span>Frete grátis</span></button>
+      <button id="couponsBtn">🏷️<span>Cupons</span></button>
+    </section>
+
+    <section class="search-row">
+      <div class="search-wrap">🔎 <input id="searchInput" type="search" placeholder="Buscar produtos..." /></div>
+      <select id="sortSelect"><option value="default">Ordenar</option><option value="low">Menor preço</option><option value="high">Maior preço</option><option value="name">Nome A-Z</option></select>
+    </section>
+
+    <section><div class="section-title"><h3>Categorias</h3></div><div class="categories" id="categories"></div></section>
+    <section><div class="section-title"><div><span class="eyebrow dark">CATÁLOGO</span><h3 id="catalogTitle">Todos os produtos</h3></div><span id="productCount"></span></div><div class="product-grid" id="productGrid"></div></section>
+  </main>
+
+  <button class="cart-fab" id="cartBtn"><span>🛒 <b>Ver carrinho</b></span><strong id="cartCount">0</strong><span id="cartTotal">R$ 0,00</span></button>
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="drawer" id="cartDrawer">
+    <div class="drawer-head"><div><span class="eyebrow dark">SEU PEDIDO</span><h2>Carrinho</h2></div><button class="close-btn" id="closeCart">✕</button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="coupon-box"><input id="couponInput" placeholder="Cupom de desconto"/><button id="applyCouponBtn">Aplicar</button></div>
+    <div class="order-mode"><button class="mode-btn active" data-mode="delivery">🚚 Entrega</button><button class="mode-btn" data-mode="pickup">🏪 Retirada</button></div>
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong id="subtotal">R$ 0,00</strong></div>
+      <div><span>Desconto</span><strong id="discount">- R$ 0,00</strong></div>
+      <div><span>Entrega</span><strong id="delivery">R$ 0,00</strong></div>
+      <div class="grand"><span>Total</span><strong id="grandTotal">R$ 0,00</strong></div>
+      <small class="shipping-tip" id="shippingTip"></small>
+      <button class="primary-btn" id="checkoutBtn">Continuar pedido</button>
+    </div>
+  </aside>
+
+  <section class="modal" id="checkoutModal"><div class="modal-card">
+    <div class="drawer-head"><div><span class="eyebrow dark">FINALIZAR</span><h2>Dados do pedido</h2></div><button class="close-btn" data-close="#checkoutModal">✕</button></div>
+    <form id="checkoutForm">
+      <div class="form-grid"><label>Nome<input required name="name" placeholder="Seu nome" /></label><label>Telefone<input required name="phone" inputmode="tel" placeholder="(00) 00000-0000" /></label></div><label>E-mail<input required name="email" type="email" placeholder="seu@email.com" /></label>
+      <label id="addressField">Endereço<input name="address" placeholder="Rua, número, bairro" /></label>
+      <div class="form-grid"><label>Pagamento<select name="payment" required><option value="">Selecione</option><option>Pix</option><option>Dinheiro</option><option>Cartão na entrega</option></select></label><label>Horário<select name="time"><option>O mais rápido possível</option><option>Em até 1 hora</option><option>Agendar</option></select></label></div>
+      <label>Observação<textarea name="notes" rows="3" placeholder="Troco, referência, substituições..."></textarea></label>
+      <div class="checkout-total">Total do pedido <strong id="checkoutTotal"></strong></div>
+      <button class="primary-btn" type="submit">Confirmar pedido</button>
+    </form>
+  </div></section>
+
+  <section class="modal" id="addressModal"><div class="modal-card small-card"><div class="drawer-head"><div><span class="eyebrow dark">ENDEREÇO</span><h2>Onde entregar?</h2></div><button class="close-btn" data-close="#addressModal">✕</button></div><form id="addressForm"><label>Endereço completo<input required name="address" placeholder="Rua, número, bairro, cidade" /></label><button class="primary-btn">Salvar endereço</button></form></div></section>
+
+  <section class="modal" id="ordersModal"><div class="modal-card"><div class="drawer-head"><div><span class="eyebrow dark">HISTÓRICO</span><h2>Meus pedidos</h2></div><button class="close-btn" data-close="#ordersModal">✕</button></div><div class="panel-content" id="ordersList"></div></div></section>
+
+  <section class="modal" id="profileModal"><div class="modal-card profile-card"><div class="drawer-head"><div><span class="eyebrow dark">MINHA CONTA</span><h2>Perfil do cliente</h2>
+        
+<small id="profileRoleLabel">Conta de cliente</small></div><button class="close-btn" id="profileCloseBtn" type="button" aria-label="Fechar perfil" data-close="#profileModal" onclick="forceCloseProfile(event)">✕</button></div>
+    <div class="profile-summary" id="profileSummary"></div>
+    <form id="profileForm">
+      <div class="form-grid"><label>Nome<input name="name" placeholder="Seu nome" /></label><label>Telefone<input name="phone" placeholder="Seu telefone" /></label></div>
+      <label>E-mail<input name="email" type="email" placeholder="seu@email.com" /></label>
+      <label>Senha da conta<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" /></label>
+      <label>Endereço principal<input name="address" placeholder="Rua, número, bairro, cidade" /></label>
+      <button class="primary-btn">Salvar / entrar na conta</button>
+      <button type="button" class="admin-access-btn" id="adminAccessBtn" hidden>🔐 Abrir painel administrativo</button>
+    </form>
+    <div class="profile-orders-block"><div class="section-title compact"><div><span class="eyebrow dark">HISTÓRICO</span><h3>Minhas compras</h3></div><strong id="profileOrderCount">0</strong></div><div id="profileOrdersList"></div></div>
+  </div></section>
+
+  <section class="modal" id="adminLoginModal"><div class="modal-card small-card secure-card">
+    <div class="drawer-head"><div><span class="eyebrow dark">ÁREA RESTRITA</span><h2>Confirmação do administrador</h2></div><button class="close-btn" data-close="#adminLoginModal">✕</button></div>
+    <div class="security-note">🔒 Este acesso só aparece para a conta reconhecida como administrador principal.</div>
+    <form id="adminLoginForm">
+      <label>E-mail administrador<input required name="email" type="email" autocomplete="username" /></label>
+      <label>Senha<input required name="password" type="password" autocomplete="current-password" /></label>
+      <button class="primary-btn">Confirmar e entrar</button>
+    </form>
+  </div></section>
+
+  <section class="modal admin-modal" id="adminModal"><div class="modal-card admin-card">
+    <div class="admin-topbar">
+      <div class="admin-brand"><div class="admin-logo">MF</div><div><span>Mercado Fácil PRO</span><strong>Central Administrativa</strong></div></div>
+      <div class="admin-head-actions"><span class="secure-pill">● Sessão protegida</span><button class="logout-btn" id="adminLogoutBtn">Sair</button><button class="close-btn" data-close="#adminModal">✕</button></div>
+    </div>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <div class="admin-user"><div>👤</div><span>Administrador<small id="adminSessionLabel">Acesso principal</small></span></div>
+        <button class="admin-tab active" data-admin-tab="dashboard">▦ <span>Visão geral</span></button>
+        <button class="admin-tab" data-admin-tab="catalog">▣ <span>Produtos</span></button>
+        <button class="admin-tab" data-admin-tab="orders">▤ <span>Pedidos</span></button>
+        <div class="admin-side-note"><b>PRO V10</b><small>Gestão inteligente do mercado</small></div>
+      </aside>
+      <div class="admin-workspace">
+        <div class="admin-mobile-tabs"><button class="admin-tab active" data-admin-tab="dashboard">Visão geral</button><button class="admin-tab" data-admin-tab="catalog">Produtos</button><button class="admin-tab" data-admin-tab="orders">Pedidos</button></div>
+        <div id="adminDashboardPane" class="admin-pane active">
+          <div class="admin-page-title"><div><span class="eyebrow dark">PAINEL EM TEMPO REAL</span><h2>Visão geral do mercado</h2><p>Acompanhe catálogo, estoque e pedidos em um só lugar.</p></div><button class="smart-action" id="dashboardNewProductBtn">＋ Novo produto</button></div>
+          <div class="admin-stats pro-stats"><div><span>Produtos cadastrados</span><strong id="adminProducts">0</strong><small>Catálogo total</small></div><div><span>Pedidos recebidos</span><strong id="adminOrders">0</strong><small>Histórico completo</small></div><div><span>Vendas acumuladas</span><strong id="adminSales">R$ 0</strong><small>Valor dos pedidos</small></div><div><span>Atenção no estoque</span><strong id="adminLowStock">0</strong><small>5 unidades ou menos</small></div></div>
+          <div class="dashboard-grid"><section class="dashboard-panel"><div class="panel-heading"><div><span class="eyebrow dark">OPERAÇÃO</span><h3>Pedidos recentes</h3></div><span class="live-dot">● ao vivo</span></div><div id="adminRecentOrders"></div></section><section class="dashboard-panel"><div class="panel-heading"><div><span class="eyebrow dark">ESTOQUE</span><h3>Produtos que precisam de atenção</h3></div></div><div id="adminStockAlerts"></div></section></div>
+        </div>
+        <div id="adminCatalogPane" class="admin-pane">
+          <div class="admin-page-title"><div><span class="eyebrow dark">CATÁLOGO INTELIGENTE</span><h2>Produtos e estoque</h2><p>Escaneie, preencha automaticamente, revise e publique.</p></div><button class="smart-action" id="focusScannerBtn">⌁ Escanear código</button></div>
+          <div class="product-studio">
+            <section class="scanner-card pro-scanner">
+              <div class="scanner-head"><div><span class="eyebrow dark">ETAPA 1 · IDENTIFICAR</span><h3>Scanner inteligente</h3><p>Leia código de barras ou QR Code e consulte automaticamente quatro bases.</p></div><span class="scanner-badge">4 fontes</span></div>
+              <div class="scanner-actions"><button class="primary-btn" type="button" id="startScannerBtn">▣ Usar câmera</button><button class="secondary-btn" type="button" id="stopScannerBtn" hidden>Fechar câmera</button></div>
+              <div class="camera-box" id="cameraBox" hidden><video id="scannerVideo" playsinline muted></video><div class="scan-frame"></div><div class="camera-hint">Centralize o código dentro da área</div></div>
+              <div class="barcode-search"><input id="barcodeLookupInput" inputmode="numeric" placeholder="EAN / UPC / GTIN / QR"/><button type="button" id="barcodeLookupBtn">Buscar</button></div>
+              <div class="lookup-status" id="lookupStatus">Pronto para leitura.</div>
+              <div class="db-grid" id="dbGrid"><span data-db="food">Food Facts</span><span data-db="beauty">Beauty Facts</span><span data-db="pet">Pet Food Facts</span><span data-db="products">Products Facts</span></div>
+              <div class="qr-result" id="qrResult" hidden></div>
+            </section>
+            <form id="productForm" class="product-editor"><input type="hidden" name="id"/>
+              <div class="editor-heading"><div><span class="eyebrow dark">ETAPA 2 · REVISAR E PUBLICAR</span><h3>Cadastro profissional</h3></div><span id="productEditState">Novo produto</span></div>
+              <fieldset><legend>Identificação</legend><div class="form-grid"><label>Código / GTIN<input name="barcode" inputmode="numeric" placeholder="EAN, UPC ou GTIN" /></label><label>SKU interno<input name="sku" placeholder="Ex.: MER-001" /></label></div><div class="form-grid"><label>Nome do produto<input required name="name" placeholder="Nome exibido ao cliente" /></label><label>Marca<input name="brand" placeholder="Marca" /></label></div>
+              <div class="category-destination">
+                <div class="destination-head"><div><span class="eyebrow dark">DESTINO NO APLICATIVO</span><h4>Onde este produto será salvo?</h4><p>Escolha o departamento e depois a seção específica. O produto aparecerá automaticamente no setor escolhido para o cliente.</p></div><span class="required-badge">Obrigatório</span></div>
+                <div class="category-picker-tools"><div class="category-search-wrap">🔎 <input type="search" id="categoryFinder" placeholder="Buscar departamento ou categoria..." /></div><span id="categoryTotalBadge">Catálogo completo</span></div>
+                <div class="form-grid"><label>Departamento principal<select required name="cat" id="productCategorySelect"></select></label><label>Categoria / seção específica<select required name="subcat" id="productSubcategorySelect"></select></label></div>
+                <div class="category-path" id="categoryPathPreview"><span>Destino</span><strong>Selecione um departamento</strong></div>
+                <div class="database-path"><span>Caminho preparado para o banco de dados</span><code id="databasePathPreview">catalogo/...</code></div>
+                <div class="category-quick" id="categoryQuickButtons"></div>
+              </div>
+              <div class="form-grid"><label>Unidade / embalagem<input required name="unit" placeholder="500 g, 1 L, unidade"/></label><label>Local / setor interno<input name="location" placeholder="Ex.: Corredor 2 · Prateleira B" /></label></div><label>Descrição curta<textarea name="description" rows="2" placeholder="Informações importantes para o cliente"></textarea></label></fieldset>
+              <fieldset><legend>Preço e margem</legend><div class="form-grid three"><label>Custo<input name="cost" type="number" min="0" step="0.01" placeholder="0,00" /></label><label>Preço de venda<input required name="price" type="number" min="0" step="0.01" placeholder="0,00" /></label><label>Preço anterior<input name="oldPrice" type="number" min="0" step="0.01" placeholder="Opcional"/></label></div><div class="margin-preview" id="marginPreview"><span>Margem estimada</span><strong>—</strong></div></fieldset>
+              <fieldset><legend>Estoque</legend><div class="form-grid"><label>Estoque atual<input required name="stock" type="number" min="0" step="1" value="20"/></label><label>Estoque mínimo<input name="minStock" type="number" min="0" step="1" value="5"/></label></div></fieldset>
+              <fieldset><legend>Imagem e publicação</legend><label>URL da imagem<input name="image" type="url" placeholder="Preenchida automaticamente quando disponível" /></label><div class="image-preview-box" id="productImagePreview"><span>Prévia do produto</span><strong>🛒</strong></div><div class="form-grid"><label>Emoji reserva<input name="emoji" placeholder="🛒"/></label><label class="toggle-label"><input name="active" type="checkbox" checked/> Visível para clientes</label></div></fieldset>
+              <div class="auto-note">O scanner pode preencher nome, marca, categoria, unidade e imagem. <b>Preço, custo e estoque continuam sob controle do mercado.</b></div>
+              <div class="form-actions"><button class="primary-btn" type="submit">Salvar e publicar</button><button class="secondary-btn" type="button" id="clearProductBtn">Limpar / novo</button></div>
+            </form>
+          </div>
+          <section class="catalog-manager"><div class="panel-heading"><div><span class="eyebrow dark">GERENCIAMENTO</span><h3>Produtos cadastrados</h3><small class="manager-help">Cada produto organizado em seu próprio quadro</small></div><input id="adminProductSearch" placeholder="Buscar no catálogo..." /></div><div class="admin-product-list" id="adminProductList"></div></section>
+        </div>
+        <div id="adminOrdersPane" class="admin-pane"><div class="admin-page-title"><div><span class="eyebrow dark">OPERAÇÃO</span><h2>Central de pedidos</h2><p>Atualize o andamento dos pedidos dos clientes.</p></div></div><div class="panel-content" id="adminOrdersList"></div></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="modal" id="successModal"><div class="modal-card success-card"><div class="success-icon">✓</div><h2>Pedido confirmado!</h2><p id="successText"></p><button class="primary-btn" id="newOrderBtn">Voltar às compras</button></div></section>
+
+  <nav class="bottom-nav"><button class="active" id="homeBtn">🏠<span>Início</span></button><button id="ordersBtn">🧾<span>Pedidos</span></button><button id="profileBtn">👤<span>Perfil</span></button></nav>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+  <script src="firebase-bridge.js"></script>
+</body>
+</html>
