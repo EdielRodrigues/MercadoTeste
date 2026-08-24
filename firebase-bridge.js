@@ -6,8 +6,17 @@
   let productListener=null,orderListener=null,userListener=null;
   const clean=o=>JSON.parse(JSON.stringify(o,(k,v)=>v===undefined?null:v));
   const normalizeId=v=>{const n=Number(v);return Number.isFinite(n)&&String(n)===String(v)?n:v};
-  function status(text,ok=false){let el=document.getElementById('firebaseStatusBadge');if(!el){el=document.createElement('div');el.id='firebaseStatusBadge';el.style.cssText='position:fixed;right:12px;top:82px;z-index:70;padding:8px 11px;border-radius:999px;font:700 11px system-ui;box-shadow:0 8px 24px #0002;border:1px solid #0001';document.body.appendChild(el)}el.textContent=text;el.style.background=ok?'#e7f7ed':'#fff4d6';el.style.color=ok?'#08753b':'#7a5700';clearTimeout(status._t);status._t=setTimeout(()=>{if(el)el.style.opacity='.35'},4500);el.style.opacity='1'}
-  function ensureDb(){if(!db)throw new Error('Firebase indisponível');}
+  function status(text,ok=false){
+  const el=document.getElementById('profileDbStatus');
+  if(!el) return;
+  const label=el.querySelector('.profile-db-label') || el.querySelector('span:last-child');
+  const dot=el.querySelector('.profile-db-dot');
+  if(label) label.textContent = ok ? '🔥 Realtime Database online' : text;
+  if(dot){
+    dot.style.background = ok ? '#10b55a' : '#d99a18';
+  }
+}
+function ensureDb(){if(!db)throw new Error('Firebase indisponível');}
   function ensureUser(){if(!currentUser)throw new Error('Usuário não autenticado');}
   function ensureAdmin(){ensureUser();if((currentUser.email||'').toLowerCase()!==adminEmail)throw new Error('Acesso administrativo negado');}
   function remoteProductsToArray(val){if(!val)return[];return Object.entries(val).map(([key,p])=>({id:normalizeId(p?.id??key),...(p||{})})).map(p=>({...p,price:+p.price||0,cost:+p.cost||0,oldPrice:+p.oldPrice||0,stock:+p.stock||0,minStock:+p.minStock||0,active:p.active!==false})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'pt-BR'))}

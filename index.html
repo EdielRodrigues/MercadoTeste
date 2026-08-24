@@ -89,6 +89,11 @@
   <section class="modal" id="ordersModal"><div class="modal-card"><div class="drawer-head"><div><span class="eyebrow dark">HISTÓRICO</span><h2>Meus pedidos</h2></div><button class="close-btn" data-close="#ordersModal">✕</button></div><div class="panel-content" id="ordersList"></div></div></section>
 
   <section class="modal" id="profileModal"><div class="modal-card profile-card"><div class="drawer-head"><div><span class="eyebrow dark">MINHA CONTA</span><h2>Perfil do cliente</h2>
+        <div id="profileDbStatus" class="profile-db-status" role="status" aria-live="polite">
+          <span class="profile-db-dot" aria-hidden="true"></span>
+          <span class="profile-db-label">🔥 Realtime Database online</span>
+        </div>
+
         
 <small id="profileRoleLabel">Conta de cliente</small></div><button class="close-btn" id="profileCloseBtn" type="button" aria-label="Fechar perfil" data-close="#profileModal" onclick="forceCloseProfile(event)">✕</button></div>
     <div class="profile-summary" id="profileSummary"></div>
