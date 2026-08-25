@@ -157,7 +157,7 @@ html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system
 .profile-head-copy{min-width:0;flex:1}
 
 
-/* ===== V15 - TEMA CLARO / ESCURO ===== */
+/* ===== V15.1 - TEMA CLARO / ESCURO ===== */
 :root{
   --page-bg:#f4f8f5;
   --surface:#ffffff;
@@ -234,7 +234,7 @@ html[data-theme="dark"] .profile-db-status{background:#173024!important;border-c
 }
 .theme-toggle-btn:active{transform:scale(.96)}
 
-/* ===== V15 - PERFIL AVANÇADO ===== */
+/* ===== V15.1 - PERFIL AVANÇADO ===== */
 .profile-card{
   background:var(--surface)!important;
   color:var(--text-main)!important;
@@ -411,7 +411,7 @@ html[data-theme="dark"] .address-card strong{
   pointer-events:auto !important;
 }
 
-/* V15 - dados principais legíveis no tema escuro */
+/* V15.1 - dados principais legíveis no tema escuro */
 html[data-theme="dark"] #homeCustomerName,
 html[data-theme="dark"] #deliveryAddress{
   color:#4da3ff !important;
@@ -424,7 +424,7 @@ html[data-theme="dark"] #homeCustomerHint{
   opacity:1 !important;
 }
 
-/* ===== V15 - MEUS PEDIDOS LEGÍVEL NO TEMA ESCURO ===== */
+/* ===== V15.1 - MEUS PEDIDOS LEGÍVEL NO TEMA ESCURO ===== */
 html[data-theme="dark"] #ordersModal .modal-card{
   background:#111a15 !important;
   color:#f4faf6 !important;
@@ -490,7 +490,7 @@ html[data-theme="dark"] #ordersModal .add-btn{
   z-index:1 !important;
 }
 
-/* ===== V15 - QUANTIDADE DO CARRINHO VISÍVEL ===== */
+/* ===== V15.1 - QUANTIDADE DO CARRINHO VISÍVEL ===== */
 .inline-qty strong,
 .product-action .inline-qty strong,
 #cartDrawer .qty strong{
@@ -532,7 +532,7 @@ html[data-theme="dark"] #cartDrawer .qty strong{
   pointer-events:auto !important;
 }
 
-/* V15 - login Firebase */
+/* V15.1 - login Firebase */
 .admin-auth-hint{
   margin:-4px 0 12px;
   padding:10px 12px;
@@ -547,7 +547,7 @@ html[data-theme="dark"] .admin-auth-hint{
   color:#79b8ff;
 }
 
-/* ===== V15 - ADM COMPLETO NO TEMA ESCURO ===== */
+/* ===== V15.1 - ADM COMPLETO NO TEMA ESCURO ===== */
 html[data-theme="dark"] #adminModal .modal-card,
 html[data-theme="dark"] #adminModal .admin-shell,
 html[data-theme="dark"] #adminModal .admin-content,
@@ -721,7 +721,7 @@ html[data-theme="dark"] #adminModal .panel-content *{
   opacity:1;
 }
 
-/* ===== V15 - ADM DARK PROFUNDO: VISÃO GERAL + PRODUTOS + PEDIDOS ===== */
+/* ===== V15.1 - ADM DARK PROFUNDO: VISÃO GERAL + PRODUTOS + PEDIDOS ===== */
 
 /* Base dos blocos grandes inferiores */
 html[data-theme="dark"] #adminModal .admin-dashboard,
@@ -918,4 +918,14 @@ html[data-theme="dark"] #adminModal .attention{
   color:#55db8d !important;
   -webkit-text-fill-color:#55db8d !important;
   opacity:1 !important;
+}
+
+/* V15.1 - botões editar/excluir confiáveis no celular */
+#adminModal [data-edit-product],
+#adminModal [data-delete-product]{
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  cursor:pointer !important;
+  position:relative !important;
+  z-index:5 !important;
 }

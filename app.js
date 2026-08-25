@@ -254,7 +254,7 @@ function renderAdmin(){if(!requireAdmin())return;const orders=getOrders();$('#ad
       <div class="admin-info-cell"><span>Estoque</span><strong class="stock-number ${p.stock===0?'out-text':p.stock<=Number(p.minStock??5)?'low-text':''}">${p.stock}</strong><small>Mínimo ${p.minStock??5}</small></div>
       <div class="admin-info-cell"><span>Status</span><strong>${p.active?'Publicado':'Oculto'}</strong><small>${p.sku||'Sem SKU'}</small></div>
     </div>
-    <div class="admin-card-actions"><button class="edit-btn edit-text-btn" onclick="editProduct(${p.id})">✎ Editar produto</button><button class="delete-btn delete-text-btn" onclick="deleteProduct(${p.id})">🗑 Excluir</button></div>
+    <div class="admin-card-actions"><button type="button" class="edit-btn edit-text-btn" data-edit-product="${p.id}">✎ Editar produto</button><button type="button" class="delete-btn delete-text-btn" data-delete-product="${p.id}">🗑 Excluir</button></div>
   </article>`).join('')+`</div>`:'<div class="empty">Nenhum produto encontrado.</div>';
   const recent=orders.slice(0,5);$('#adminRecentOrders').innerHTML=recent.length?recent.map(o=>`<div class="mini-row"><div><strong>${o.id} · ${o.customer?.name||'Cliente'}</strong><small>${new Date(o.date).toLocaleString('pt-BR')} · ${o.status}</small></div><div class="mini-value">${fmt(o.total)}</div></div>`).join(''):'<div class="empty">Nenhum pedido ainda.</div>';
   $('#adminStockAlerts').innerHTML=low.length?low.sort((a,b)=>a.stock-b.stock).slice(0,6).map(p=>`<div class="mini-row"><div><strong>${p.name}</strong><small>${p.cat} · mínimo ${p.minStock??5}</small></div><div class="mini-value attention">${p.stock} un.</div></div>`).join(''):'<div class="empty">Estoque saudável.</div>';
@@ -262,8 +262,53 @@ function renderAdmin(){if(!requireAdmin())return;const orders=getOrders();$('#ad
 function renderAdminOrders(){if(!isAdmin)return;const orders=getOrders();$('#adminOrdersList').innerHTML=orders.length?orders.map(o=>`<div class="order-card"><div class="order-card-head"><div><h4>${o.id}</h4><small>${new Date(o.date).toLocaleString('pt-BR')} • ${o.customer?.name||'Cliente'}</small></div><strong>${fmt(o.total)}</strong></div><div class="admin-order-actions"><select id="status-${o.id}">${['Recebido','Separando','Saiu para entrega','Pronto para retirada','Concluído','Cancelado'].map(st=>`<option ${o.status===st?'selected':''}>${st}</option>`).join('')}</select><button onclick="updateOrderStatus('${o.id}')">Atualizar</button><button class="danger-mini" onclick="deleteOrder('${o.id}')">Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum pedido recebido.</div>'}
 async function updateOrderStatus(id){if(!requireAdmin())return;const statusValue=$(`#status-${id}`).value;try{if(window.firebaseBackend?.updateOrderStatus)await window.firebaseBackend.updateOrderStatus(id,statusValue);else throw new Error('Firebase indisponível');renderAdmin();toast('Status salvo no banco e no navegador')}catch(e){toast('Falha no banco. Nada foi salvo localmente')}}
 async function deleteOrder(id){if(!requireAdmin()||!confirm('Excluir este pedido do painel?'))return;try{if(window.firebaseBackend?.deleteOrder)await window.firebaseBackend.deleteOrder(id);else throw new Error('Firebase indisponível');renderAdmin();toast('Pedido excluído do banco e do navegador')}catch(e){toast('Falha no banco. Pedido não foi excluído')}}
-function editProduct(id){if(!requireAdmin())return;const p=products.find(x=>x.id===id),f=$('#productForm');if(!p)return;['id','barcode','sku','brand','name','unit','price','cost','oldPrice','stock','minStock','location','image','emoji','description'].forEach(k=>{if(f.elements[k])f.elements[k].value=p[k]??''});setupCategoryControls(p.cat,p.subcat||'');f.elements.active.checked=p.active!==false;$('#productEditState').textContent='Modo edição · '+p.name;updateCategoryPath();updateProductPreview();updateMarginPreview();f.scrollIntoView({behavior:'smooth',block:'start'})}
-async function deleteProduct(id){if(!requireAdmin()||!confirm('Excluir este produto? Esta ação é exclusiva do administrador.'))return;try{if(window.firebaseBackend?.deleteProduct)await window.firebaseBackend.deleteProduct(id);else throw new Error('Firebase indisponível');delete cart[id];persist();renderAll();renderAdmin();toast('Produto excluído do banco e do navegador')}catch(e){toast('Falha no banco. Produto não foi excluído')}}
+function editProduct(id){
+  if(!requireAdmin()) return;
+
+  const key=String(id);
+  const p=products.find(x=>String(x.id)===key);
+  const f=$('#productForm');
+
+  if(!p){
+    toast('Produto não encontrado para edição');
+    return;
+  }
+  if(!f){
+    toast('Formulário de produto não encontrado');
+    return;
+  }
+
+  ['id','barcode','sku','brand','name','unit','price','cost','oldPrice','stock','minStock','location','image','emoji','description'].forEach(k=>{
+    if(f.elements[k]) f.elements[k].value=p[k]??'';
+  });
+
+  setupCategoryControls(p.cat,p.subcat||'');
+
+  if(f.elements.active) f.elements.active.checked=p.active!==false;
+
+  const state=$('#productEditState');
+  if(state) state.textContent='Modo edição · '+(p.name||'Produto');
+
+  updateCategoryPath();
+  updateProductPreview();
+  updateMarginPreview();
+
+  const pane=document.getElementById('adminCatalogPane');
+  if(pane && !pane.classList.contains('active')){
+    document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.admin-pane').forEach(el=>el.classList.remove('active'));
+    pane.classList.add('active');
+    document.querySelectorAll('[data-admin-tab="catalog"]').forEach(b=>b.classList.add('active'));
+  }
+
+  f.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>{
+    if(f.elements.name) f.elements.name.focus({preventScroll:true});
+  },350);
+
+  toast('Produto carregado para edição');
+}
+async function deleteProduct(id){id=String(id);if(!requireAdmin()||!confirm('Excluir este produto? Esta ação é exclusiva do administrador.'))return;try{if(window.firebaseBackend?.deleteProduct)await window.firebaseBackend.deleteProduct(id);else throw new Error('Firebase indisponível');delete cart[id];persist();renderAll();renderAdmin();toast('Produto excluído do banco e do navegador')}catch(e){toast('Falha no banco. Produto não foi excluído')}}
 function clearProductForm(){const f=$('#productForm');f.reset();f.elements.id.value='';f.elements.stock.value=20;if(f.elements.minStock)f.elements.minStock.value=5;f.elements.active.checked=true;setupCategoryControls('Mercearia','');$('#productEditState').textContent='Novo produto';updateProductPreview();updateMarginPreview()}
 
 const PRODUCT_DATABASES=[
@@ -535,7 +580,7 @@ document.addEventListener('click',e=>{
   if(el) openUserProfile(e);
 });
 
-// V15 - garantir Perfil no topo e rodapé após carregar DOM
+// V15.1 - garantir Perfil no topo e rodapé após carregar DOM
 window.addEventListener('DOMContentLoaded',()=>{
   ['profileTopBtn','profileBtn'].forEach(id=>{
     const btn=document.getElementById(id);
@@ -548,7 +593,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-// V15 - reforço dos botões em Meus pedidos
+// V15.1 - reforço dos botões em Meus pedidos
 document.addEventListener('click',e=>{
   const btn=e.target.closest && e.target.closest('[data-repeat-order]');
   if(!btn)return;
@@ -558,7 +603,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// ===== V15 - PERFIL: TOPO E RODAPÉ =====
+// ===== V15.1 - PERFIL: TOPO E RODAPÉ =====
 function openProfileReliable(ev){
   if(ev){
     ev.preventDefault();
@@ -609,3 +654,22 @@ if(document.readyState==='loading'){
 }else{
   bindProfileButtons();
 }
+
+
+// V15.1 - ações dos produtos compatíveis com IDs do Firebase
+document.addEventListener('click',e=>{
+  const editBtn=e.target.closest && e.target.closest('[data-edit-product]');
+  if(editBtn){
+    e.preventDefault();
+    e.stopPropagation();
+    editProduct(editBtn.dataset.editProduct);
+    return;
+  }
+
+  const deleteBtn=e.target.closest && e.target.closest('[data-delete-product]');
+  if(deleteBtn){
+    e.preventDefault();
+    e.stopPropagation();
+    deleteProduct(deleteBtn.dataset.deleteProduct);
+  }
+});

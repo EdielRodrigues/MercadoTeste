@@ -1,5 +1,5 @@
-const CACHE='mercado-facil-pro-v15';
-const ASSETS=['./styles.css?v=15','./app.js?v=15','./firebase-config.js?v=15','./firebase-bridge.js?v=15','./manifest.json','./icons/icon-192.svg','./icons/icon-512.svg'];
+const CACHE='mercado-facil-pro-v15-1';
+const ASSETS=['./styles.css?v=15.1','./app.js?v=15.1','./firebase-config.js?v=15.1','./firebase-bridge.js?v=15.1','./manifest.json','./icons/icon-192.svg','./icons/icon-512.svg'];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
