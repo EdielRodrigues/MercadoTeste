@@ -1,0 +1,17 @@
+MERCADO FÁCIL PRO - REGRAS REALTIME DATABASE
+
+ERRO CORRIGIDO:
+PERMISSION_DENIED durante a finalização do pedido.
+
+IMPORTANTE:
+O arquivo database.rules.json precisa ser publicado no Firebase Console:
+Realtime Database > Rules > cole o conteúdo > Publish.
+
+As regras permitem:
+- Todos os clientes: ler produtos.
+- Cliente autenticado: salvar somente o próprio perfil.
+- Cliente autenticado: criar somente pedidos vinculados ao próprio UID.
+- Cliente autenticado: somente DIMINUIR o campo stock e atualizar updatedAt durante a compra.
+- Administrador diel_zi_nho25@hotmail.com: cadastrar, editar e excluir produtos e administrar pedidos.
+
+Não basta trocar o HTML no GitHub Pages. As regras são executadas no servidor Firebase.

@@ -1,4 +1,11 @@
 
+// V15.7 - dados da conta ficam somente no Firebase Realtime Database
+try{
+  localStorage.removeItem('mercado_profile');
+  localStorage.removeItem('mercado_address');
+}catch(e){}
+
+
 // ===== TEMA CLARO / ESCURO =====
 const THEME_KEY='mercado_theme';
 function applyTheme(theme){
@@ -145,7 +152,7 @@ function updateCategoryPath(){const cat=$('#productCategorySelect')?.value,sub=$
 let products=(JSON.parse(localStorage.getItem('mercado_products')||'null')||seedProducts).map(p=>{const cat=normalizeDepartment(p.cat);return {...p,cat,subcat:p.subcat||guessSubcategory(cat,p.name),stock:Number.isFinite(+p.stock)?+p.stock:20,active:p.active!==false}});
 let cart=JSON.parse(localStorage.getItem('mercado_cart')||'{}');
 let favorites=JSON.parse(localStorage.getItem('mercado_favorites')||'[]');
-let profile=JSON.parse(localStorage.getItem('mercado_profile')||'{}');
+let profile={};
 let selectedCat='Todos',onlyOffers=false,onlyFavorites=false,orderMode='delivery',coupon='';
 let isAdmin=sessionStorage.getItem('mercado_admin_session')==='1' && (profile.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase();
 function persist(){localStorage.setItem('mercado_cart',JSON.stringify(cart));localStorage.setItem('mercado_favorites',JSON.stringify(favorites));}
@@ -185,7 +192,15 @@ window.forceCloseProfile=forceCloseProfile;
 function getOrders(){return JSON.parse(localStorage.getItem('mercado_orders')||'[]')}
 function saveOrders(orders){localStorage.setItem('mercado_orders',JSON.stringify(orders))}
 function customerOrderMatch(o){const pe=(profile.email||'').trim().toLowerCase(),pp=(profile.phone||'').replace(/\D/g,'');const oe=(o.customer?.email||'').trim().toLowerCase(),op=(o.customer?.phone||'').replace(/\D/g,'');if(pe&&oe)return pe===oe;if(pp&&op)return pp===op;return false}
-function getCustomerOrders(){return getOrders().filter(customerOrderMatch)}
+function getCustomerOrders(){
+  const seen=new Set();
+  return getOrders().filter(customerOrderMatch).filter(o=>{
+    const key=String(o?.id||'');
+    if(!key||seen.has(key))return false;
+    seen.add(key);
+    return true;
+  });
+}
 function renderOrders(){const orders=getCustomerOrders();$('#ordersList').innerHTML=orders.length?orders.map(o=>`<div class="order-card"><div class="order-card-head"><div><h4>${o.id}</h4><small>${new Date(o.date).toLocaleString('pt-BR')}</small></div><strong>${fmt(o.total)}</strong></div><span class="status">${o.status}</span><button type="button" class="add-btn repeat-order-btn" data-repeat-order="${o.id}" style="margin-top:9px" onclick="repeatOrder('${o.id}')">Comprar novamente</button></div>`).join(''):'<div class="empty">Você ainda não fez pedidos com esta conta.</div>'}
 function renderProfile(){
   const f=$('#profileForm');
@@ -194,7 +209,7 @@ function renderProfile(){
       if(f.elements[k]) f.elements[k].value=profile[k]||'';
     });
     if(f.elements.password) f.elements.password.value='';
-    if(f.elements.address) f.elements.address.value=profile.address||localStorage.getItem('mercado_address')||'';
+    if(f.elements.address) f.elements.address.value=profile.address||profile.address||'';
   }
 
   const adminRecognized=isAdminAccount();
@@ -218,7 +233,7 @@ function renderProfile(){
   setText('profileDisplayName',profile.name||'Faça seu cadastro');
   setText('profileDisplayEmail',profile.email||'Seu e-mail aparecerá aqui');
   setText('profilePhoneView',profile.phone||'Não informado');
-  setText('profileAddressView',profile.address||localStorage.getItem('mercado_address')||'Não informado');
+  setText('profileAddressView',profile.address||profile.address||'Não informado');
   setText('profileEmailView',profile.email||'Não informado');
   setText('profileOrderCount',purchasedQty);
   setText('profileSpentTotal',fmt(totalSpent));
@@ -358,7 +373,7 @@ $('#searchInput').oninput=renderProducts;$('#sortSelect').onchange=renderProduct
 $('#cartBtn').onclick=()=>{renderCart();$('#cartDrawer').classList.add('open');$('#overlay').classList.add('show')};$('#closeCart').onclick=$('#overlay').onclick=()=>{$('#cartDrawer').classList.remove('open');$('#overlay').classList.remove('show')};
 $('#showOffersBtn').onclick=()=>{onlyOffers=true;onlyFavorites=false;selectedCat='Todos';renderAll();$('#catalogTitle').scrollIntoView({behavior:'smooth'})};$('#favoritesBtn').onclick=()=>{onlyFavorites=true;onlyOffers=false;selectedCat='Todos';renderAll()};$('#freeShipBtn').onclick=()=>toast('Frete grátis acima de R$ 100');$('#couponsBtn').onclick=()=>toast('Use o cupom MERCADO10');$('#repeatBtn').onclick=()=>{const orders=getCustomerOrders();if(!orders.length)return toast('Nenhum pedido anterior nesta conta');repeatOrder(orders[0].id)};
 $$('.mode-btn').forEach(b=>b.onclick=()=>{orderMode=b.dataset.mode;$$('.mode-btn').forEach(x=>x.classList.toggle('active',x===b));renderCart()});$('#applyCouponBtn').onclick=()=>{const c=$('#couponInput').value.trim().toUpperCase();coupon=c==='MERCADO10'?c:'';toast(coupon?'Cupom aplicado: 10% OFF':'Cupom inválido');renderCart()};
-$('#checkoutBtn').onclick=()=>{if(!totals().count)return toast('Adicione produtos primeiro');$('#cartDrawer').classList.remove('open');$('#overlay').classList.remove('show');const f=$('#checkoutForm');f.elements.name.value=profile.name||'';f.elements.phone.value=profile.phone||'';f.elements.email.value=profile.email||'';const addr=profile.address||localStorage.getItem('mercado_address')||'';f.elements.address.value=addr;$('#addressField').style.display=orderMode==='pickup'?'none':'block';f.elements.address.required=orderMode!=='pickup';$('#checkoutTotal').textContent=fmt(totals().total);openModal('#checkoutModal')};
+$('#checkoutBtn').onclick=()=>{if(!totals().count)return toast('Adicione produtos primeiro');$('#cartDrawer').classList.remove('open');$('#overlay').classList.remove('show');const f=$('#checkoutForm');f.elements.name.value=profile.name||'';f.elements.phone.value=profile.phone||'';f.elements.email.value=profile.email||'';const addr=profile.address||profile.address||'';f.elements.address.value=addr;$('#addressField').style.display=orderMode==='pickup'?'none':'block';f.elements.address.required=orderMode!=='pickup';$('#checkoutTotal').textContent=fmt(totals().total);openModal('#checkoutModal')};
 $$('[data-close]').forEach(b=>{
   const doClose=(ev)=>{
     if(ev){ev.preventDefault();ev.stopPropagation();}
@@ -372,7 +387,7 @@ if(profileCloseBtn){
   const closeProfileNow=(ev)=>forceCloseProfile(ev);
   ['pointerdown','touchstart','touchend','click'].forEach(type=>profileCloseBtn.addEventListener(type,closeProfileNow,{capture:true,passive:false}));
 }
-$('#addressBtn').onclick=()=>{const a=localStorage.getItem('mercado_address')||'';$('#addressForm').elements.address.value=a;openModal('#addressModal')};$('#addressForm').onsubmit=async e=>{e.preventDefault();const a=new FormData(e.target).get('address').trim();const next={...profile,address:a};try{if(!window.firebaseBackend?.saveProfile)throw new Error('Firebase indisponível');await window.firebaseBackend.saveProfile(next);profile=next;renderAll();closeModal('#addressModal');toast('Endereço salvo no banco e no navegador')}catch(err){toast('Falha no banco. Endereço não foi salvo localmente')}};
+$('#addressBtn').onclick=()=>{const a=profile.address||'';$('#addressForm').elements.address.value=a;openModal('#addressModal')};$('#addressForm').onsubmit=async e=>{e.preventDefault();const a=new FormData(e.target).get('address').trim();const next={...profile,address:a};try{if(!window.firebaseBackend?.saveProfile)throw new Error('Firebase indisponível');await window.firebaseBackend.saveProfile(next);profile=next;renderAll();closeModal('#addressModal');toast('Endereço salvo no banco e no navegador')}catch(err){toast('Falha no banco. Endereço não foi salvo localmente')}};
 $('#checkoutForm').onsubmit=async e=>{e.preventDefault();const btn=e.target.querySelector('button[type=submit]');const oldText=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Salvando no banco...'}try{const t=totals(),fd=new FormData(e.target),data=Object.fromEntries(fd);if(orderMode==='pickup')data.address='Retirada no mercado';for(const [pid,q] of Object.entries(cart)){const p=products.find(x=>x.id==pid);if(!p||!p.active||q>p.stock){toast('O estoque mudou. Revise o carrinho.');renderAll();return}}const order={id:'PED'+Date.now().toString().slice(-6),date:new Date().toISOString(),customer:data,items:Object.entries(cart),subtotal:t.subtotal,discount:t.discount,delivery:t.delivery,total:t.total,mode:orderMode,status:'Recebido'};const nextProfile={...profile,name:data.name,phone:data.phone,email:data.email,address:orderMode==='delivery'?data.address:(profile.address||'')};if(!window.firebaseBackend?.commitOrder)throw new Error('Firebase indisponível');await window.firebaseBackend.commitOrder(order,{...cart},nextProfile);profile=nextProfile;cart={};coupon='';persist();closeModal('#checkoutModal');$('#successText').textContent=`${order.id} • ${fmt(order.total)} • ${orderMode==='delivery'?'Entrega':'Retirada'}`;openModal('#successModal');renderAll()}catch(err){console.error(err);toast(err?.message||'Falha ao salvar pedido no banco. Nada foi salvo localmente')}finally{if(btn){btn.disabled=false;btn.textContent=oldText}}};
 $('#ordersBtn').onclick=()=>{renderOrders();openModal('#ordersModal')};function openProfile(){renderProfile();openModal('#profileModal')}$('#profileForm').onsubmit=async e=>{
   e.preventDefault();
@@ -517,14 +532,14 @@ renderAll();
 // ===== PERFIL AVANÇADO =====
 function updateAdvancedProfile(){
   try{
-    const p=JSON.parse(localStorage.getItem('mercado_profile')||'{}');
+    const p=profile||{};
     const orders=JSON.parse(localStorage.getItem('mercado_orders')||'[]');
     const favs=JSON.parse(localStorage.getItem('mercado_favorites')||'[]');
     const fmtMoney=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     const name=p.name||'Faça seu cadastro';
     const email=p.email||'Seu e-mail aparecerá aqui';
     const phone=p.phone||'Não informado';
-    const address=p.address||localStorage.getItem('mercado_address')||'Não informado';
+    const address=p.address||profile.address||'Não informado';
     const total=orders.reduce((s,o)=>s+Number(o.total||0),0);
 
     const setText=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
@@ -569,12 +584,12 @@ document.addEventListener('click',e=>{
 const pf=document.getElementById('profileForm');
 if(pf) pf.addEventListener('submit',()=>setTimeout(updateAdvancedProfile,250));
 window.addEventListener('storage',e=>{
-  if(['mercado_profile','mercado_orders','mercado_favorites','mercado_address'].includes(e.key)) updateAdvancedProfile();
+  if(['mercado_orders','mercado_favorites'].includes(e.key)) updateAdvancedProfile();
 });
 setTimeout(updateAdvancedProfile,300);
 
 
-// ===== V15.3 - ACESSO ROBUSTO AO PERFIL =====
+// ===== V15.7 - ACESSO ROBUSTO AO PERFIL =====
 function openUserProfile(ev){
   if(ev){ev.preventDefault();ev.stopPropagation();}
   const modal=document.getElementById('profileModal');
@@ -603,7 +618,7 @@ document.addEventListener('click',e=>{
   if(el) openUserProfile(e);
 });
 
-// V15.3 - garantir Perfil no topo e rodapé após carregar DOM
+// V15.7 - garantir Perfil no topo e rodapé após carregar DOM
 window.addEventListener('DOMContentLoaded',()=>{
   ['profileTopBtn','profileBtn'].forEach(id=>{
     const btn=document.getElementById(id);
@@ -616,7 +631,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-// V15.3 - reforço dos botões em Meus pedidos
+// V15.7 - reforço dos botões em Meus pedidos
 document.addEventListener('click',e=>{
   const btn=e.target.closest && e.target.closest('[data-repeat-order]');
   if(!btn)return;
@@ -626,7 +641,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// ===== V15.3 - PERFIL: TOPO E RODAPÉ =====
+// ===== V15.7 - PERFIL: TOPO E RODAPÉ =====
 function openProfileReliable(ev){
   if(ev){
     ev.preventDefault();
@@ -679,7 +694,7 @@ if(document.readyState==='loading'){
 }
 
 
-// V15.3 - ações dos produtos compatíveis com IDs do Firebase
+// V15.7 - ações dos produtos compatíveis com IDs do Firebase
 document.addEventListener('click',e=>{
   const editBtn=e.target.closest && e.target.closest('[data-edit-product]');
   if(editBtn){
@@ -698,7 +713,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// V15.3 — botão "Voltar às compras" da confirmação do pedido
+// V15.7 — botão "Voltar às compras" da confirmação do pedido
 document.addEventListener('click', function(e){
   const btn = e.target.closest && e.target.closest(
     '#orderSuccess button, #successModal button, #orderConfirmed button, .order-success button, .success-modal button, [data-back-shopping]'

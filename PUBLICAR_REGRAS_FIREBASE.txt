@@ -1,0 +1,16 @@
+IMPORTANTE - TESTE COM CLIENTE COMUM
+
+1. Firebase Console > Authentication > Sign-in method:
+   ative Anonymous.
+
+2. Firebase Console > Realtime Database > Rules:
+   cole TODO o conteúdo de database.rules.json e clique em Publish.
+
+Essas regras deixam cliente comum:
+- ler produtos;
+- salvar o próprio perfil;
+- criar o próprio pedido;
+- somente DIMINUIR estoque durante a compra.
+
+Cliente NÃO pode alterar preço, nome, categoria, imagem, status do produto ou excluir produtos.
+Administrador continua com acesso total.

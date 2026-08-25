@@ -930,7 +930,7 @@ html[data-theme="dark"] #adminModal .attention{
   z-index:5 !important;
 }
 
-/* V15.3 — somente textos pequenos dos cards de produtos no ADM / tema escuro */
+/* V15.7 — somente textos pequenos dos cards de produtos no ADM / tema escuro */
 body.dark #adminModal .admin-product-card .admin-info-cell span,
 body.dark #adminModal .admin-product-card .admin-info-cell small,
 body.dark #adminModal .admin-product-card .admin-product-main small,
@@ -941,7 +941,7 @@ body.dark #adminModal .admin-product-card .product-meta small {
   -webkit-text-fill-color:#1677ff !important;
 }
 
-/* V15.3 — clique do botão de finalização */
+/* V15.7 — clique do botão de finalização */
 #orderSuccess button,
 #successModal button,
 #orderConfirmed button,
@@ -954,7 +954,7 @@ body.dark #adminModal .admin-product-card .product-meta small {
   touch-action:manipulation !important;
 }
 
-/* V15.3 — textos dos quadros brancos do produto em azul forte */
+/* V15.7 — textos dos quadros brancos do produto em azul forte */
 #adminModal .admin-info-cell span,
 #adminModal .admin-info-cell strong,
 #adminModal .admin-info-cell small{
@@ -970,7 +970,7 @@ html[data-theme="dark"] #adminModal .admin-info-cell small{
   opacity:1 !important;
 }
 
-/* V15.3 — histórico de compras organizado em cards */
+/* V15.7 — histórico de compras organizado em cards */
 .profile-orders-block{
   padding:18px !important;
 }

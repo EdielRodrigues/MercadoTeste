@@ -5,19 +5,21 @@
     "products": {
       ".read": true,
       "$productId": {
-        ".write": "auth != null && auth.token.email == 'diel_zi_nho25@hotmail.com'"
+        ".write": "auth != null && (auth.token.email == 'diel_zi_nho25@hotmail.com' || (auth != null && data.exists() && newData.exists() && newData.child('id').val() == data.child('id').val() && newData.child('name').val() == data.child('name').val() && newData.child('brand').val() == data.child('brand').val() && newData.child('barcode').val() == data.child('barcode').val() && newData.child('sku').val() == data.child('sku').val() && newData.child('cat').val() == data.child('cat').val() && newData.child('subcat').val() == data.child('subcat').val() && newData.child('unit').val() == data.child('unit').val() && newData.child('price').val() == data.child('price').val() && newData.child('cost').val() == data.child('cost').val() && newData.child('oldPrice').val() == data.child('oldPrice').val() && newData.child('minStock').val() == data.child('minStock').val() && newData.child('location').val() == data.child('location').val() && newData.child('image').val() == data.child('image').val() && newData.child('emoji').val() == data.child('emoji').val() && newData.child('description').val() == data.child('description').val() && newData.child('active').val() == data.child('active').val() && newData.child('stock').isNumber() && data.child('stock').isNumber() && newData.child('stock').val() >= 0 && newData.child('stock').val() <= data.child('stock').val()))"
       }
     },
     "users": {
       "$uid": {
         ".read": "auth != null && (auth.uid == $uid || auth.token.email == 'diel_zi_nho25@hotmail.com')",
-        ".write": "auth != null && (auth.uid == $uid || auth.token.email == 'diel_zi_nho25@hotmail.com')"
+        ".write": "auth != null && (auth.uid == $uid || auth.token.email == 'diel_zi_nho25@hotmail.com')",
+        ".validate": "newData.hasChildren(['uid']) && newData.child('uid').val() == $uid"
       }
     },
     "orders": {
       ".read": "auth != null",
       "$orderId": {
-        ".write": "auth != null && (auth.token.email == 'diel_zi_nho25@hotmail.com' || (!data.exists() && newData.child('customerUid').val() == auth.uid))"
+        ".write": "auth != null && (auth.token.email == 'diel_zi_nho25@hotmail.com' || (!data.exists() && newData.child('customerUid').val() == auth.uid))",
+        ".validate": "newData.hasChildren(['id','customerUid']) && newData.child('id').val() == $orderId"
       }
     }
   }

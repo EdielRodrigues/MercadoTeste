@@ -19,9 +19,27 @@ function ensureDb(){if(!db)throw new Error('Firebase indisponível');}
   function ensureAdmin(){ensureUser();if((currentUser.email||'').toLowerCase()!==adminEmail)throw new Error('Acesso administrativo negado');}
   function remoteProductsToArray(val){if(!val)return[];return Object.entries(val).map(([key,p])=>({id:normalizeId(p?.id??key),...(p||{})})).map(p=>({...p,price:+p.price||0,cost:+p.cost||0,oldPrice:+p.oldPrice||0,stock:+p.stock||0,minStock:+p.minStock||0,active:p.active!==false})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'pt-BR'))}
   function cacheProducts(list){localStorage.setItem('mercado_products',JSON.stringify(list))}
-  function cacheOrders(list){localStorage.setItem('mercado_orders',JSON.stringify(list))}
-  function cacheProfile(p){localStorage.setItem('mercado_profile',JSON.stringify(p));if(p.address)localStorage.setItem('mercado_address',p.address)}
-  async function ensureAuth(){await new Promise(resolve=>{const off=auth.onAuthStateChanged(u=>{off();currentUser=u;resolve()})});if(!currentUser){const cred=await auth.signInAnonymously();currentUser=cred.user}}
+  function cacheOrders(list){
+    const unique=[];
+    const seen=new Set();
+    for(const o of (Array.isArray(list)?list:[])){
+      const key=String(o?.id||'');
+      if(!key || seen.has(key)) continue;
+      seen.add(key);
+      unique.push(o);
+    }
+    localStorage.setItem('mercado_orders',JSON.stringify(unique));
+  }
+  function cacheProfile(p){profile={...profile,...(p||{})}} // PERFIL SOMENTE FIREBASE: sem localStorage
+  async function ensureAuth(){await new Promise(resolve=>{const off=auth.onAuthStateChanged(u=>{off();currentUser=u;resolve()})});if(!currentUser){
+      try{
+        const cred=await auth.signInAnonymously();
+        currentUser=cred.user;
+      }catch(err){
+        console.error('Anonymous Auth:',err);
+        throw new Error('Ative Anonymous em Firebase Authentication > Sign-in method');
+      }
+    }}
   function attachProductsListener(){if(productListener)db.ref('products').off('value',productListener);productListener=snap=>{const remote=remoteProductsToArray(snap.val());products.splice(0,products.length,...remote);cacheProducts(products);renderAll?.();if(window.firebaseBackend.isAdmin)renderAdmin?.()};db.ref('products').on('value',productListener,e=>console.warn(e))}
   function attachProfileListener(){if(!currentUser)return;if(userListener)db.ref(`users/${currentUser.uid}`).off('value',userListener);userListener=snap=>{if(!snap.exists())return;profile={...profile,...snap.val()};cacheProfile(profile);renderAll?.();renderProfile?.()};db.ref(`users/${currentUser.uid}`).on('value',userListener,e=>console.warn(e))}
   function attachOrdersListener(){if(!currentUser)return;if(orderListener)db.ref('orders').off('value',orderListener);orderListener=snap=>{let list=Object.entries(snap.val()||{}).map(([key,o])=>({id:o?.id||key,...(o||{})}));if(!window.firebaseBackend.isAdmin)list=list.filter(o=>o.customerUid===currentUser.uid);list.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));cacheOrders(list);renderOrders?.();renderProfile?.();if(window.firebaseBackend.isAdmin)renderAdmin?.()};db.ref('orders').on('value',orderListener,e=>console.warn(e))}
@@ -51,7 +69,7 @@ function ensureDb(){if(!db)throw new Error('Firebase indisponível');}
     async deleteOrder(id){ensureDb();ensureAdmin();await db.ref(`orders/${id}`).remove();cacheOrders(getOrders().filter(o=>String(o.id)!==String(id)));status('🔥 Pedido removido do banco',true)},
     async commitOrder(order,cartSnapshot,nextProfile){ensureDb();ensureUser();const productSnaps=await Promise.all(Object.keys(cartSnapshot).map(id=>db.ref(`products/${id}`).once('value')));const updates={};for(let k=0;k<productSnaps.length;k++){const id=Object.keys(cartSnapshot)[k],p=productSnaps[k].val(),q=Number(cartSnapshot[id]||0);if(!p||p.active===false||Number(p.stock||0)<q)throw new Error(`Estoque insuficiente para ${p?.name||'um produto'}`);updates[`products/${id}/stock`]=Number(p.stock||0)-q;updates[`products/${id}/updatedAt`]=firebase.database.ServerValue.TIMESTAMP}
       updates[`orders/${order.id}`]=clean({...order,id:order.id,customerUid:currentUser.uid,createdAt:firebase.database.ServerValue.TIMESTAMP});updates[`users/${currentUser.uid}`]=clean({...nextProfile,uid:currentUser.uid,email:nextProfile.email||currentUser.email||'',updatedAt:firebase.database.ServerValue.TIMESTAMP});await db.ref().update(updates);
-      for(const [id,q] of Object.entries(cartSnapshot)){const p=products.find(x=>String(x.id)===String(id));if(p)p.stock=Math.max(0,Number(p.stock||0)-Number(q||0))}cacheProducts(products);const orders=getOrders();orders.unshift({...order,customerUid:currentUser.uid});cacheOrders(orders);profile={...profile,...nextProfile};cacheProfile(profile);status('🔥 Pedido confirmado no banco',true);return order}
+      for(const [id,q] of Object.entries(cartSnapshot)){const p=products.find(x=>String(x.id)===String(id));if(p)p.stock=Math.max(0,Number(p.stock||0)-Number(q||0))}cacheProducts(products);profile={...profile,...nextProfile};cacheProfile(profile);status('🔥 Pedido confirmado no banco',true);return order}
   };
 
   if(!configured){window.addEventListener('load',()=>status('🔥 Firebase: configuração incompleta'));return}
