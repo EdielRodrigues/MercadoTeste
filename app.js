@@ -551,7 +551,7 @@ window.addEventListener('storage',e=>{
 setTimeout(updateAdvancedProfile,300);
 
 
-// ===== V15.1 - ACESSO ROBUSTO AO PERFIL =====
+// ===== V15.2 - ACESSO ROBUSTO AO PERFIL =====
 function openUserProfile(ev){
   if(ev){ev.preventDefault();ev.stopPropagation();}
   const modal=document.getElementById('profileModal');
@@ -580,7 +580,7 @@ document.addEventListener('click',e=>{
   if(el) openUserProfile(e);
 });
 
-// V15.1 - garantir Perfil no topo e rodapé após carregar DOM
+// V15.2 - garantir Perfil no topo e rodapé após carregar DOM
 window.addEventListener('DOMContentLoaded',()=>{
   ['profileTopBtn','profileBtn'].forEach(id=>{
     const btn=document.getElementById(id);
@@ -593,7 +593,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-// V15.1 - reforço dos botões em Meus pedidos
+// V15.2 - reforço dos botões em Meus pedidos
 document.addEventListener('click',e=>{
   const btn=e.target.closest && e.target.closest('[data-repeat-order]');
   if(!btn)return;
@@ -603,7 +603,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// ===== V15.1 - PERFIL: TOPO E RODAPÉ =====
+// ===== V15.2 - PERFIL: TOPO E RODAPÉ =====
 function openProfileReliable(ev){
   if(ev){
     ev.preventDefault();
@@ -656,7 +656,7 @@ if(document.readyState==='loading'){
 }
 
 
-// V15.1 - ações dos produtos compatíveis com IDs do Firebase
+// V15.2 - ações dos produtos compatíveis com IDs do Firebase
 document.addEventListener('click',e=>{
   const editBtn=e.target.closest && e.target.closest('[data-edit-product]');
   if(editBtn){
@@ -673,3 +673,41 @@ document.addEventListener('click',e=>{
     deleteProduct(deleteBtn.dataset.deleteProduct);
   }
 });
+
+
+// V15.2 — botão "Voltar às compras" da confirmação do pedido
+document.addEventListener('click', function(e){
+  const btn = e.target.closest && e.target.closest(
+    '#orderSuccess button, #successModal button, #orderConfirmed button, .order-success button, .success-modal button, [data-back-shopping]'
+  );
+  if(!btn) return;
+
+  const label=(btn.textContent||'').trim().toLowerCase();
+  if(!label.includes('voltar') || !label.includes('compra')) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  ['orderSuccess','successModal','orderConfirmed','checkoutSuccess'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){
+      el.hidden=true;
+      el.classList.remove('open','active','show');
+      el.style.display='none';
+    }
+  });
+
+  document.querySelectorAll('.order-success,.success-modal,.checkout-success').forEach(el=>{
+    el.hidden=true;
+    el.classList.remove('open','active','show');
+    el.style.display='none';
+  });
+
+  document.body.classList.remove('modal-open','no-scroll');
+  document.documentElement.classList.remove('modal-open','no-scroll');
+
+  const admin=document.getElementById('adminModal');
+  if(!admin || admin.hidden || !admin.classList.contains('open')){
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}, true);
