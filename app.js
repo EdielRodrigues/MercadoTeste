@@ -205,6 +205,9 @@ function renderProfile(){
   if(adminBtn) adminBtn.hidden=!adminRecognized;
 
   const orders=getCustomerOrders();
+  const purchasedQty=orders.reduce((sum,o)=>{
+    return sum+(Array.isArray(o.items)?o.items.reduce((s,item)=>s+Number(item?.[1]||0),0):0);
+  },0);
   const totalSpent=orders.reduce((sum,o)=>sum+Number(o.total||0),0);
 
   const setText=(id,value)=>{
@@ -217,7 +220,7 @@ function renderProfile(){
   setText('profilePhoneView',profile.phone||'Não informado');
   setText('profileAddressView',profile.address||localStorage.getItem('mercado_address')||'Não informado');
   setText('profileEmailView',profile.email||'Não informado');
-  setText('profileOrderCount',orders.length);
+  setText('profileOrderCount',purchasedQty);
   setText('profileSpentTotal',fmt(totalSpent));
   setText('profileFavoriteCount',favorites.length);
 
@@ -229,11 +232,30 @@ function renderProfile(){
   const list=$('#profileOrdersList');
   if(list){
     list.innerHTML=orders.length?orders.map(o=>{
+      const orderQty=(o.items||[]).reduce((s,item)=>s+Number(item?.[1]||0),0);
       const items=(o.items||[]).map(([pid,q])=>{
         const pp=products.find(x=>String(x.id)===String(pid));
-        return pp?`${q}x ${pp.name}`:`${q}x Produto`;
-      }).slice(0,5).join(' • ');
-      return `<div class="profile-order"><div class="profile-order-head"><div><h4>${o.id}</h4><small>${new Date(o.date).toLocaleString('pt-BR')} • ${o.status}</small></div><strong>${fmt(o.total)}</strong></div><div class="profile-order-items">${items}</div></div>`;
+        return `<div class="history-item-row"><span>${q}x</span><strong>${pp?pp.name:'Produto'}</strong></div>`;
+      }).join('');
+
+      return `<article class="profile-history-card">
+        <div class="profile-history-head">
+          <div>
+            <span class="history-code-label">CÓDIGO DA COMPRA</span>
+            <h4>${o.id}</h4>
+          </div>
+          <span class="history-status">${o.status||'Recebido'}</span>
+        </div>
+        <div class="profile-history-meta">
+          <span>📅 ${new Date(o.date).toLocaleString('pt-BR')}</span>
+          <span>🛒 ${orderQty} ${orderQty===1?'produto':'produtos'}</span>
+        </div>
+        <div class="profile-history-items">${items}</div>
+        <div class="profile-history-total">
+          <span>Total da compra</span>
+          <strong>${fmt(o.total)}</strong>
+        </div>
+      </article>`;
     }).join(''):'<div class="empty">Nenhuma compra vinculada a este perfil.</div>';
   }
 
@@ -511,7 +533,8 @@ function updateAdvancedProfile(){
     setText('profilePhoneView',phone);
     setText('profileAddressView',address);
     setText('profileEmailView',email==='Seu e-mail aparecerá aqui'?'Não informado':email);
-    setText('profileOrderCount',orders.length);
+    const purchasedQtyAdvanced=orders.reduce((sum,o)=>sum+(Array.isArray(o.items)?o.items.reduce((s,item)=>s+Number(item?.[1]||0),0):0),0);
+    setText('profileOrderCount',purchasedQtyAdvanced);
     setText('profileSpentTotal',fmtMoney(total));
     setText('profileFavoriteCount',favs.length);
 
@@ -551,7 +574,7 @@ window.addEventListener('storage',e=>{
 setTimeout(updateAdvancedProfile,300);
 
 
-// ===== V15.2 - ACESSO ROBUSTO AO PERFIL =====
+// ===== V15.3 - ACESSO ROBUSTO AO PERFIL =====
 function openUserProfile(ev){
   if(ev){ev.preventDefault();ev.stopPropagation();}
   const modal=document.getElementById('profileModal');
@@ -580,7 +603,7 @@ document.addEventListener('click',e=>{
   if(el) openUserProfile(e);
 });
 
-// V15.2 - garantir Perfil no topo e rodapé após carregar DOM
+// V15.3 - garantir Perfil no topo e rodapé após carregar DOM
 window.addEventListener('DOMContentLoaded',()=>{
   ['profileTopBtn','profileBtn'].forEach(id=>{
     const btn=document.getElementById(id);
@@ -593,7 +616,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-// V15.2 - reforço dos botões em Meus pedidos
+// V15.3 - reforço dos botões em Meus pedidos
 document.addEventListener('click',e=>{
   const btn=e.target.closest && e.target.closest('[data-repeat-order]');
   if(!btn)return;
@@ -603,7 +626,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// ===== V15.2 - PERFIL: TOPO E RODAPÉ =====
+// ===== V15.3 - PERFIL: TOPO E RODAPÉ =====
 function openProfileReliable(ev){
   if(ev){
     ev.preventDefault();
@@ -656,7 +679,7 @@ if(document.readyState==='loading'){
 }
 
 
-// V15.2 - ações dos produtos compatíveis com IDs do Firebase
+// V15.3 - ações dos produtos compatíveis com IDs do Firebase
 document.addEventListener('click',e=>{
   const editBtn=e.target.closest && e.target.closest('[data-edit-product]');
   if(editBtn){
@@ -675,7 +698,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// V15.2 — botão "Voltar às compras" da confirmação do pedido
+// V15.3 — botão "Voltar às compras" da confirmação do pedido
 document.addEventListener('click', function(e){
   const btn = e.target.closest && e.target.closest(
     '#orderSuccess button, #successModal button, #orderConfirmed button, .order-success button, .success-modal button, [data-back-shopping]'

@@ -930,7 +930,7 @@ html[data-theme="dark"] #adminModal .attention{
   z-index:5 !important;
 }
 
-/* V15.2 — somente textos pequenos dos cards de produtos no ADM / tema escuro */
+/* V15.3 — somente textos pequenos dos cards de produtos no ADM / tema escuro */
 body.dark #adminModal .admin-product-card .admin-info-cell span,
 body.dark #adminModal .admin-product-card .admin-info-cell small,
 body.dark #adminModal .admin-product-card .admin-product-main small,
@@ -941,7 +941,7 @@ body.dark #adminModal .admin-product-card .product-meta small {
   -webkit-text-fill-color:#1677ff !important;
 }
 
-/* V15.2 — clique do botão de finalização */
+/* V15.3 — clique do botão de finalização */
 #orderSuccess button,
 #successModal button,
 #orderConfirmed button,
@@ -952,4 +952,121 @@ body.dark #adminModal .admin-product-card .product-meta small {
   z-index:50 !important;
   pointer-events:auto !important;
   touch-action:manipulation !important;
+}
+
+/* V15.3 — textos dos quadros brancos do produto em azul forte */
+#adminModal .admin-info-cell span,
+#adminModal .admin-info-cell strong,
+#adminModal .admin-info-cell small{
+  color:#006DFF !important;
+  -webkit-text-fill-color:#006DFF !important;
+  opacity:1 !important;
+}
+html[data-theme="dark"] #adminModal .admin-info-cell span,
+html[data-theme="dark"] #adminModal .admin-info-cell strong,
+html[data-theme="dark"] #adminModal .admin-info-cell small{
+  color:#006DFF !important;
+  -webkit-text-fill-color:#006DFF !important;
+  opacity:1 !important;
+}
+
+/* V15.3 — histórico de compras organizado em cards */
+.profile-orders-block{
+  padding:18px !important;
+}
+#profileOrdersList{
+  display:grid !important;
+  gap:14px !important;
+}
+.profile-history-card{
+  border:1px solid rgba(70,110,88,.22);
+  border-radius:20px;
+  padding:15px;
+  background:#ffffff;
+  box-shadow:0 7px 22px rgba(0,0,0,.06);
+}
+.profile-history-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.profile-history-head h4{
+  margin:3px 0 0;
+  font-size:19px;
+  color:#16211a;
+}
+.history-code-label{
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.2px;
+  color:#6f7f75;
+}
+.history-status{
+  padding:6px 9px;
+  border-radius:999px;
+  background:#e8f7ee;
+  color:#0b7a3e;
+  font-size:10px;
+  font-weight:900;
+}
+.profile-history-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  margin:12px 0;
+  color:#65766b;
+  font-size:11px;
+}
+.profile-history-items{
+  display:grid;
+  gap:7px;
+  padding:11px 0;
+  border-top:1px solid #e7ece8;
+  border-bottom:1px solid #e7ece8;
+}
+.history-item-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-size:13px;
+}
+.history-item-row span{
+  min-width:28px;
+  color:#0b7a3e;
+  font-weight:900;
+}
+.history-item-row strong{
+  color:#1b281f;
+}
+.profile-history-total{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+}
+.profile-history-total span{
+  color:#68776e;
+  font-size:11px;
+}
+.profile-history-total strong{
+  color:#0b7a3e;
+  font-size:18px;
+}
+html[data-theme="dark"] .profile-history-card{
+  background:#18231c !important;
+  border-color:#31453a !important;
+}
+html[data-theme="dark"] .profile-history-head h4,
+html[data-theme="dark"] .history-item-row strong{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+html[data-theme="dark"] .history-code-label,
+html[data-theme="dark"] .profile-history-meta,
+html[data-theme="dark"] .profile-history-total span{
+  color:#aebfb4 !important;
+}
+html[data-theme="dark"] .profile-history-items{
+  border-color:#31453a !important;
 }
