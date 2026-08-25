@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon-192.svg" />
-  <title>Mercado Fácil PRO V12</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Mercado Fácil PRO V15</title>
+  <link rel="stylesheet" href="styles.css?v=15" />
 </head>
 <body>
   <header class="topbar">
@@ -17,7 +17,11 @@
       <div class="brand-icon">🛒</div>
       <div><span class="eyebrow">SUPERMERCADO ONLINE</span><h1>Mercado Fácil <b>PRO</b></h1></div>
     </div>
-    <div class="top-actions"><button class="icon-btn top-profile-btn" id="topProfileBtn" title="Meu perfil">👤</button><button class="icon-btn" id="installBtn" hidden title="Instalar aplicativo">⬇️</button></div>
+    <div class="top-actions"><button class="icon-btn top-profile-btn" id="topProfileBtn" title="Meu perfil">👤</button>
+      <button class="top-action theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema" title="Alternar tema">
+        <span id="themeToggleIcon">🌙</span>
+      </button>
+<button class="icon-btn" id="installBtn" hidden title="Instalar aplicativo">⬇️</button></div>
   </header>
 
   <main>
@@ -86,21 +90,111 @@
 
   <section class="modal" id="addressModal"><div class="modal-card small-card"><div class="drawer-head"><div><span class="eyebrow dark">ENDEREÇO</span><h2>Onde entregar?</h2></div><button class="close-btn" data-close="#addressModal">✕</button></div><form id="addressForm"><label>Endereço completo<input required name="address" placeholder="Rua, número, bairro, cidade" /></label><button class="primary-btn">Salvar endereço</button></form></div></section>
 
-  <section class="modal" id="ordersModal"><div class="modal-card"><div class="drawer-head"><div><span class="eyebrow dark">HISTÓRICO</span><h2>Meus pedidos</h2></div><button class="close-btn" data-close="#ordersModal">✕</button></div><div class="panel-content" id="ordersList"></div></div></section>
+  <section class="modal orders-modal" id="ordersModal"><div class="modal-card"><div class="drawer-head"><div><span class="eyebrow dark">HISTÓRICO</span><h2>Meus pedidos</h2></div><button class="close-btn" data-close="#ordersModal">✕</button></div><div class="panel-content" id="ordersList"></div></div></section>
 
-  <section class="modal" id="profileModal"><div class="modal-card profile-card"><div class="drawer-head"><div><span class="eyebrow dark">MINHA CONTA</span><h2>Perfil do cliente</h2>
+  <section class="modal" id="profileModal">
+  <div class="modal-card profile-card">
+    <div class="drawer-head profile-head">
+      <div class="profile-head-copy">
+        <span class="eyebrow dark">MINHA CONTA</span>
+        <h2>Perfil do cliente</h2>
+        <small id="profileRoleLabel">Conta de cliente</small>
         <div id="profileDbStatus" class="profile-db-status" role="status" aria-live="polite">
           <span class="profile-db-dot" aria-hidden="true"></span>
           <span class="profile-db-label">🔥 Realtime Database online</span>
         </div>
+      </div>
+      <button class="close-btn" id="profileCloseBtn" type="button" aria-label="Fechar perfil" data-close="#profileModal" onclick="forceCloseProfile(event)">✕</button>
+    </div>
+    
+    <div class="profile-dashboard">
+      <div class="profile-identity-card">
+        <div class="profile-avatar-lg" id="profileAvatarLg">👤</div>
+        <div class="profile-identity-copy">
+          <span class="profile-mini-label">CONTA DO CLIENTE</span>
+          <h3 id="profileDisplayName">Faça seu cadastro</h3>
+          <p id="profileDisplayEmail">Seu e-mail aparecerá aqui</p>
+          <div class="profile-status-line">
+            <span class="profile-status-dot"></span>
+            <span id="profileAccountStatus">Conta ativa</span>
+          </div>
+        </div>
+      </div>
 
-        
-<small id="profileRoleLabel">Conta de cliente</small></div><button class="close-btn" id="profileCloseBtn" type="button" aria-label="Fechar perfil" data-close="#profileModal" onclick="forceCloseProfile(event)">✕</button></div>
-    <div class="profile-summary" id="profileSummary"></div>
+      <div class="profile-stats-grid">
+        <div class="profile-stat-card">
+          <span>🧾</span>
+          <strong id="profileOrderCount">0</strong>
+          <small>Pedidos</small>
+        </div>
+        <div class="profile-stat-card">
+          <span>💰</span>
+          <strong id="profileSpentTotal">R$ 0,00</strong>
+          <small>Total comprado</small>
+        </div>
+        <div class="profile-stat-card">
+          <span>❤️</span>
+          <strong id="profileFavoriteCount">0</strong>
+          <small>Favoritos</small>
+        </div>
+      </div>
+
+      <div class="profile-info-grid">
+        <div class="profile-info-card">
+          <div class="profile-info-icon">📞</div>
+          <div>
+            <small>Telefone</small>
+            <strong id="profilePhoneView">Não informado</strong>
+          </div>
+        </div>
+        <div class="profile-info-card">
+          <div class="profile-info-icon">📍</div>
+          <div>
+            <small>Endereço principal</small>
+            <strong id="profileAddressView">Não informado</strong>
+          </div>
+        </div>
+        <div class="profile-info-card">
+          <div class="profile-info-icon">📧</div>
+          <div>
+            <small>E-mail</small>
+            <strong id="profileEmailView">Não informado</strong>
+          </div>
+        </div>
+        <div class="profile-info-card">
+          <div class="profile-info-icon">🔒</div>
+          <div>
+            <small>Segurança</small>
+            <strong>Conta protegida</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-shortcuts">
+        <button type="button" class="profile-shortcut" id="profileOrdersShortcut">
+          <span>🧾</span><b>Meus pedidos</b><small>Ver histórico completo</small>
+        </button>
+        <button type="button" class="profile-shortcut" id="profileFavoritesShortcut">
+          <span>❤️</span><b>Favoritos</b><small>Produtos salvos</small>
+        </button>
+        <button type="button" class="profile-shortcut" id="profileAddressShortcut">
+          <span>📍</span><b>Endereço</b><small>Alterar entrega</small>
+        </button>
+      </div>
+    </div>
+
+    
+    <div class="profile-edit-title">
+      <div>
+        <span class="profile-mini-label">MEUS DADOS</span>
+        <h3>Editar informações</h3>
+      </div>
+      <span>✏️</span>
+    </div>
     <form id="profileForm">
       <div class="form-grid"><label>Nome<input name="name" placeholder="Seu nome" /></label><label>Telefone<input name="phone" placeholder="Seu telefone" /></label></div>
       <label>E-mail<input name="email" type="email" placeholder="seu@email.com" /></label>
-      <label>Senha da conta<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" /></label>
+      <label>Senha da conta<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" /></label><div id="adminAuthHint" class="admin-auth-hint">A senha do administrador é a cadastrada no Firebase Authentication.</div>
       <label>Endereço principal<input name="address" placeholder="Rua, número, bairro, cidade" /></label>
       <button class="primary-btn">Salvar / entrar na conta</button>
       <button type="button" class="admin-access-btn" id="adminAccessBtn" hidden>🔐 Abrir painel administrativo</button>
@@ -183,8 +277,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js"></script>
-  <script src="app.js"></script>
-  <script src="firebase-bridge.js"></script>
+  <script src="firebase-config.js?v=15"></script>
+  <script src="app.js?v=15"></script>
+  <script src="firebase-bridge.js?v=15"></script>
 </body>
 </html>

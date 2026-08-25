@@ -9,12 +9,10 @@
   function status(text,ok=false){
   const el=document.getElementById('profileDbStatus');
   if(!el) return;
-  const label=el.querySelector('.profile-db-label') || el.querySelector('span:last-child');
+  const label=el.querySelector('.profile-db-label');
   const dot=el.querySelector('.profile-db-dot');
-  if(label) label.textContent = ok ? '🔥 Realtime Database online' : text;
-  if(dot){
-    dot.style.background = ok ? '#10b55a' : '#d99a18';
-  }
+  if(label) label.textContent=ok?'🔥 Realtime Database online':String(text||'Firebase offline');
+  if(dot) dot.dataset.state=ok?'online':'offline';
 }
 function ensureDb(){if(!db)throw new Error('Firebase indisponível');}
   function ensureUser(){if(!currentUser)throw new Error('Usuário não autenticado');}
@@ -31,6 +29,19 @@ function ensureDb(){if(!db)throw new Error('Firebase indisponível');}
   async function loadRemoteDataOnce(){ensureDb();const [ps,us,os]=await Promise.all([db.ref('products').once('value'),currentUser?db.ref(`users/${currentUser.uid}`).once('value'):null,currentUser?db.ref('orders').once('value'):null]);const remote=remoteProductsToArray(ps.val());products.splice(0,products.length,...remote);cacheProducts(products);if(us?.exists()){profile={...profile,...us.val()};cacheProfile(profile)}if(os){let list=Object.entries(os.val()||{}).map(([key,o])=>({id:o?.id||key,...(o||{})}));if(!window.firebaseBackend.isAdmin)list=list.filter(o=>o.customerUid===currentUser.uid);list.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));cacheOrders(list)}renderAll?.();renderProfile?.();renderOrders?.()}
 
   window.firebaseBackend={
+    async loginAdmin(email,password){
+      ensureDb();
+      const normalized=String(email||'').trim().toLowerCase();
+      if(normalized!==adminEmail) throw new Error('E-mail sem permissão administrativa');
+      const cred=await auth.signInWithEmailAndPassword(normalized,String(password||''));
+      currentUser=cred.user;
+      isAdmin=(currentUser.email||'').toLowerCase()===adminEmail;
+      if(!isAdmin) throw new Error('Acesso administrativo negado');
+      attachRealtimeListeners();
+      await loadRemoteDataOnce();
+      return {uid:currentUser.uid,email:currentUser.email};
+    },
+
     get configured(){return configured},get connected(){return!!db},get user(){return currentUser},get isAdmin(){return!!currentUser&&(currentUser.email||'').toLowerCase()===adminEmail},
     async reload(){await loadRemoteDataOnce()},
     async saveProfile(nextProfile){ensureDb();ensureUser();const payload=clean({...nextProfile,email:nextProfile.email||currentUser.email||'',uid:currentUser.uid,updatedAt:firebase.database.ServerValue.TIMESTAMP});await db.ref(`users/${currentUser.uid}`).update(payload);profile={...profile,...nextProfile};cacheProfile(profile);status('🔥 Perfil confirmado no banco',true);return profile},

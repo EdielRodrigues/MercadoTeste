@@ -57,7 +57,7 @@ html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system
 
 
 
-/* V12.7 — status do Firebase somente dentro do Perfil */
+/* V12.9 — status do Firebase somente dentro do Perfil */
 #firebaseStatus,
 #realtimeStatus,
 #dbStatus,
@@ -98,4 +98,824 @@ html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system
   background:#10b55a;
   box-shadow:0 0 0 5px rgba(16,181,90,.12);
   flex:0 0 auto;
+}
+
+/* V12.9: indicador Firebase somente dentro do Perfil */
+#firebaseStatusBadge,#firebaseStatus,#realtimeStatus,#dbStatus,#connectionStatus{
+ display:none!important;
+}
+#profileDbStatus{
+ display:flex!important;position:static!important;inset:auto!important;
+ transform:none!important;z-index:auto!important;width:100%!important;
+ margin:12px 0 0!important;
+}
+
+/* V12.9 - Firebase somente no Perfil; nunca flutuante na Home */
+#firebaseStatusBadge,#firebaseStatus,#realtimeStatus,#dbStatus,#connectionStatus,
+.firebase-status,.realtime-status,.db-status,.connection-status,.firebase-badge{
+  display:none!important;
+}
+#profileDbStatus.profile-db-status{
+  display:flex!important;
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  z-index:auto!important;
+  width:100%!important;
+  margin:12px 0 0!important;
+}
+
+/* V15 VERIFIED — status Firebase somente dentro do Perfil */
+#firebaseStatusBadge,#firebaseStatus,#realtimeStatus,#dbStatus,#connectionStatus,
+.firebase-status,.realtime-status,.db-status,.connection-status,.firebase-badge{
+  display:none !important;
+}
+#profileModal #profileDbStatus.profile-db-status{
+  display:flex !important;
+  align-items:center !important;
+  gap:9px !important;
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  width:auto !important;
+  max-width:100% !important;
+  margin:10px 0 0 !important;
+  padding:9px 12px !important;
+  border-radius:12px !important;
+  background:#eef9f2 !important;
+  color:#117a43 !important;
+  border:1px solid rgba(15,157,80,.16) !important;
+  font-size:12px !important;
+  font-weight:800 !important;
+  z-index:auto !important;
+}
+#profileModal #profileDbStatus .profile-db-dot{
+  width:9px;height:9px;border-radius:50%;background:#10b55a;flex:0 0 auto;
+}
+#profileModal #profileDbStatus .profile-db-dot[data-state="offline"]{background:#d99a18}
+.profile-head{align-items:flex-start !important}
+.profile-head-copy{min-width:0;flex:1}
+
+
+/* ===== V15 - TEMA CLARO / ESCURO ===== */
+:root{
+  --page-bg:#f4f8f5;
+  --surface:#ffffff;
+  --surface-2:#f0f6f2;
+  --text-main:#15211a;
+  --text-soft:#68766e;
+  --border-soft:#dde7e0;
+  --shadow-soft:0 10px 30px rgba(12,57,31,.08);
+}
+html[data-theme="dark"]{
+  --page-bg:#0d1511;
+  --surface:#151f19;
+  --surface-2:#1c2922;
+  --text-main:#f3f8f4;
+  --text-soft:#a9b9af;
+  --border-soft:#2a3a31;
+  --shadow-soft:0 10px 30px rgba(0,0,0,.28);
+  color-scheme:dark;
+}
+html[data-theme="dark"] body{
+  background:var(--page-bg)!important;
+  color:var(--text-main)!important;
+}
+html[data-theme="dark"] .product-card,
+html[data-theme="dark"] .profile-card,
+html[data-theme="dark"] .modal-card,
+html[data-theme="dark"] .drawer,
+html[data-theme="dark"] .profile-info-card,
+html[data-theme="dark"] .profile-stat-card,
+html[data-theme="dark"] .profile-shortcut,
+html[data-theme="dark"] .search-wrap input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .cat-btn{
+  background:var(--surface)!important;
+  color:var(--text-main)!important;
+  border-color:var(--border-soft)!important;
+}
+html[data-theme="dark"] .product-image,
+html[data-theme="dark"] .profile-identity-card{
+  background:var(--surface-2)!important;
+}
+html[data-theme="dark"] small,
+html[data-theme="dark"] .stock-label,
+html[data-theme="dark"] .profile-mini-label,
+html[data-theme="dark"] .profile-info-card small,
+html[data-theme="dark"] .profile-shortcut small{
+  color:var(--text-soft)!important;
+}
+html[data-theme="dark"] .bottom-nav{
+  background:#101813!important;
+  border-color:var(--border-soft)!important;
+}
+html[data-theme="dark"] .bottom-nav button{color:#9eb0a5!important}
+html[data-theme="dark"] .bottom-nav button.active{color:#4ed487!important}
+html[data-theme="dark"] .drawer-head{border-color:var(--border-soft)!important}
+html[data-theme="dark"] .close-btn{background:#26352c!important;color:#fff!important}
+html[data-theme="dark"] .profile-db-status{background:#173024!important;border-color:#28583b!important;color:#7ee3a6!important}
+
+.theme-toggle-btn{
+  width:48px;
+  height:48px;
+  border:0;
+  border-radius:16px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font-size:22px;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  flex:0 0 auto;
+  backdrop-filter:blur(8px);
+}
+.theme-toggle-btn:active{transform:scale(.96)}
+
+/* ===== V15 - PERFIL AVANÇADO ===== */
+.profile-card{
+  background:var(--surface)!important;
+  color:var(--text-main)!important;
+}
+.profile-dashboard{
+  padding:18px;
+  display:grid;
+  gap:14px;
+}
+.profile-identity-card{
+  background:linear-gradient(135deg,#eef8f1,#f8fbf9);
+  border:1px solid var(--border-soft);
+  border-radius:22px;
+  padding:17px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  box-shadow:var(--shadow-soft);
+}
+.profile-avatar-lg{
+  width:70px;
+  height:70px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#0b7a3e,#11a75a);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:30px;
+  font-weight:900;
+  flex:0 0 auto;
+}
+.profile-identity-copy{min-width:0}
+.profile-identity-copy h3{
+  margin:3px 0 2px;
+  font-size:21px;
+  line-height:1.15;
+}
+.profile-identity-copy p{
+  margin:0;
+  color:var(--text-soft);
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.profile-mini-label{
+  font-size:10px;
+  letter-spacing:1.3px;
+  font-weight:900;
+  color:#728078;
+}
+.profile-status-line{
+  margin-top:8px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#16824b;
+  font-size:12px;
+  font-weight:800;
+}
+.profile-status-dot{
+  width:8px;height:8px;border-radius:50%;background:#14b765;
+  box-shadow:0 0 0 4px rgba(20,183,101,.12);
+}
+.profile-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+.profile-stat-card{
+  background:var(--surface);
+  border:1px solid var(--border-soft);
+  border-radius:18px;
+  padding:13px 9px;
+  text-align:center;
+  box-shadow:var(--shadow-soft);
+}
+.profile-stat-card span{font-size:22px;display:block}
+.profile-stat-card strong{display:block;font-size:16px;margin-top:5px}
+.profile-stat-card small{font-size:10px;color:var(--text-soft)}
+.profile-info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.profile-info-card{
+  background:var(--surface);
+  border:1px solid var(--border-soft);
+  border-radius:18px;
+  padding:13px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.profile-info-icon{
+  width:36px;height:36px;border-radius:12px;
+  background:#eaf7ef;display:grid;place-items:center;flex:0 0 auto;
+}
+.profile-info-card small{display:block;color:var(--text-soft);font-size:10px}
+.profile-info-card strong{display:block;font-size:13px;margin-top:3px;word-break:break-word}
+.profile-shortcuts{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+.profile-shortcut{
+  border:1px solid var(--border-soft);
+  background:var(--surface);
+  color:var(--text-main);
+  border-radius:18px;
+  padding:13px 8px;
+  text-align:center;
+  box-shadow:var(--shadow-soft);
+}
+.profile-shortcut span{font-size:22px;display:block}
+.profile-shortcut b{font-size:12px;display:block;margin:5px 0 2px}
+.profile-shortcut small{font-size:9px;color:var(--text-soft);line-height:1.2;display:block}
+.profile-edit-title{
+  margin:4px 18px 0;
+  padding:16px 0 2px;
+  border-top:1px solid var(--border-soft);
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+}
+.profile-edit-title h3{margin:3px 0 0;font-size:18px}
+.profile-head-copy{min-width:0}
+#profileModal .drawer-head{
+  background:var(--surface);
+  color:var(--text-main);
+}
+#profileModal form input,
+#profileModal form textarea,
+#profileModal form select{
+  background:var(--surface);
+  color:var(--text-main);
+  border-color:var(--border-soft);
+}
+
+@media(max-width:520px){
+  .profile-stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .profile-info-grid{grid-template-columns:1fr}
+  .profile-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .profile-shortcut{padding:11px 5px}
+  .profile-shortcut b{font-size:11px}
+  .profile-identity-card{align-items:flex-start}
+}
+
+/* ===== V15.1 - CORREÇÕES TEMA ESCURO + PERFIL ===== */
+html[data-theme="dark"] #welcomeName,
+html[data-theme="dark"] #homeUserName,
+html[data-theme="dark"] .welcome-card h2,
+html[data-theme="dark"] .welcome-card h3,
+html[data-theme="dark"] .welcome-card strong,
+html[data-theme="dark"] #addressLabel,
+html[data-theme="dark"] #homeAddress,
+html[data-theme="dark"] .address-card h2,
+html[data-theme="dark"] .address-card h3,
+html[data-theme="dark"] .address-card strong{
+  color:#4da3ff !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#4da3ff !important;
+}
+
+#profileTopBtn,
+#profileBtn{
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  position:relative;
+  z-index:40;
+}
+#profileModal.open{
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+/* V15 - dados principais legíveis no tema escuro */
+html[data-theme="dark"] #homeCustomerName,
+html[data-theme="dark"] #deliveryAddress{
+  color:#4da3ff !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#4da3ff !important;
+  text-shadow:none !important;
+}
+html[data-theme="dark"] #homeCustomerHint{
+  color:#8fc5ff !important;
+  opacity:1 !important;
+}
+
+/* ===== V15 - MEUS PEDIDOS LEGÍVEL NO TEMA ESCURO ===== */
+html[data-theme="dark"] #ordersModal .modal-card{
+  background:#111a15 !important;
+  color:#f4faf6 !important;
+}
+html[data-theme="dark"] #ordersModal .drawer-head{
+  background:#111a15 !important;
+  color:#f4faf6 !important;
+  border-color:#2b3a31 !important;
+}
+html[data-theme="dark"] #ordersModal .drawer-head h2,
+html[data-theme="dark"] #ordersModal .drawer-head .eyebrow{
+  color:#f4faf6 !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#f4faf6 !important;
+}
+html[data-theme="dark"] #ordersModal .order-card{
+  background:#18231c !important;
+  border:1px solid #314339 !important;
+  color:#f5faf7 !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22) !important;
+}
+html[data-theme="dark"] #ordersModal .order-card h4,
+html[data-theme="dark"] #ordersModal .order-card-head strong{
+  color:#ffffff !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+html[data-theme="dark"] #ordersModal .order-card small{
+  color:#b8c8be !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#b8c8be !important;
+}
+html[data-theme="dark"] #ordersModal .status{
+  background:#173b28 !important;
+  color:#69e49a !important;
+  border:1px solid #275d3d !important;
+}
+html[data-theme="dark"] #ordersModal .repeat-order-btn,
+html[data-theme="dark"] #ordersModal .add-btn{
+  background:#18a85a !important;
+  color:#ffffff !important;
+  border:0 !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#ffffff !important;
+  box-shadow:0 8px 20px rgba(24,168,90,.24) !important;
+}
+#ordersModal .repeat-order-btn{
+  width:100% !important;
+  min-height:48px !important;
+  position:relative !important;
+  z-index:5 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  font-weight:900 !important;
+  cursor:pointer !important;
+}
+#ordersModal .order-card{
+  position:relative !important;
+  z-index:1 !important;
+}
+#ordersModal .panel-content{
+  position:relative !important;
+  z-index:1 !important;
+}
+
+/* ===== V15 - QUANTIDADE DO CARRINHO VISÍVEL ===== */
+.inline-qty strong,
+.product-action .inline-qty strong,
+#cartDrawer .qty strong{
+  color:#006DFF !important;
+  -webkit-text-fill-color:#006DFF !important;
+  opacity:1 !important;
+  font-size:20px !important;
+  font-weight:1000 !important;
+  min-width:34px !important;
+  text-align:center !important;
+  text-shadow:none !important;
+}
+html[data-theme="dark"] .inline-qty strong,
+html[data-theme="dark"] .product-action .inline-qty strong,
+html[data-theme="dark"] #cartDrawer .qty strong{
+  color:#168BFF !important;
+  -webkit-text-fill-color:#168BFF !important;
+}
+
+/* Perfil sempre clicável */
+#topProfileBtn,
+#profileBtn{
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  cursor:pointer !important;
+}
+#topProfileBtn{
+  position:relative !important;
+  z-index:80 !important;
+}
+#profileBtn{
+  position:relative !important;
+  z-index:80 !important;
+}
+#profileModal.open{
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+/* V15 - login Firebase */
+.admin-auth-hint{
+  margin:-4px 0 12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#eef7ff;
+  color:#245f9d;
+  font-size:11px;
+  font-weight:700;
+}
+html[data-theme="dark"] .admin-auth-hint{
+  background:#14263a;
+  color:#79b8ff;
+}
+
+/* ===== V15 - ADM COMPLETO NO TEMA ESCURO ===== */
+html[data-theme="dark"] #adminModal .modal-card,
+html[data-theme="dark"] #adminModal .admin-shell,
+html[data-theme="dark"] #adminModal .admin-content,
+html[data-theme="dark"] #adminModal .admin-panel,
+html[data-theme="dark"] #adminModal .admin-tab-panel{
+  background:#101812 !important;
+  color:#f3f8f4 !important;
+}
+
+html[data-theme="dark"] #adminModal .admin-header,
+html[data-theme="dark"] #adminModal .admin-top,
+html[data-theme="dark"] #adminModal .drawer-head{
+  background:#0d2114 !important;
+  color:#ffffff !important;
+  border-color:#26382d !important;
+}
+
+html[data-theme="dark"] #adminModal [data-admin-tab]{
+  background:#18241c !important;
+  color:#d8e5dc !important;
+  border:1px solid #32453a !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#d8e5dc !important;
+}
+
+html[data-theme="dark"] #adminModal [data-admin-tab].active{
+  background:#0d8f49 !important;
+  color:#ffffff !important;
+  border-color:#14a95b !important;
+  -webkit-text-fill-color:#ffffff !important;
+  box-shadow:0 8px 20px rgba(13,143,73,.22) !important;
+}
+
+/* títulos e textos */
+html[data-theme="dark"] #adminModal h1,
+html[data-theme="dark"] #adminModal h2,
+html[data-theme="dark"] #adminModal h3,
+html[data-theme="dark"] #adminModal h4,
+html[data-theme="dark"] #adminModal strong,
+html[data-theme="dark"] #adminModal b,
+html[data-theme="dark"] #adminModal label{
+  color:#f7fbf8 !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#f7fbf8 !important;
+}
+
+html[data-theme="dark"] #adminModal p,
+html[data-theme="dark"] #adminModal small,
+html[data-theme="dark"] #adminModal .eyebrow,
+html[data-theme="dark"] #adminModal .muted,
+html[data-theme="dark"] #adminModal .subtext{
+  color:#aebdb3 !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:#aebdb3 !important;
+}
+
+/* cards da visão geral */
+html[data-theme="dark"] #adminModal .summary-card,
+html[data-theme="dark"] #adminModal .metric-card,
+html[data-theme="dark"] #adminModal .dashboard-card,
+html[data-theme="dark"] #adminModal .overview-card,
+html[data-theme="dark"] #adminModal .mini-card,
+html[data-theme="dark"] #adminModal .stock-card{
+  background:#18231c !important;
+  border:1px solid #304238 !important;
+  color:#f4faf6 !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.20) !important;
+}
+
+/* produtos */
+html[data-theme="dark"] #adminModal .admin-product-card,
+html[data-theme="dark"] #adminModal .product-admin-card,
+html[data-theme="dark"] #adminModal .admin-product-row,
+html[data-theme="dark"] #adminModal .admin-product-item,
+html[data-theme="dark"] #adminModal .product-row,
+html[data-theme="dark"] #adminModal .product-manage-card{
+  background:#18231c !important;
+  border:1px solid #304238 !important;
+  color:#f6fbf7 !important;
+}
+
+html[data-theme="dark"] #adminModal .admin-product-card > div,
+html[data-theme="dark"] #adminModal .admin-product-row > div,
+html[data-theme="dark"] #adminModal .product-manage-card > div{
+  background:#1d2a22 !important;
+  border-color:#35483d !important;
+  color:#f2f8f4 !important;
+}
+
+html[data-theme="dark"] #adminModal .admin-product-card small,
+html[data-theme="dark"] #adminModal .admin-product-row small,
+html[data-theme="dark"] #adminModal .product-manage-card small{
+  color:#a9baaf !important;
+}
+
+/* pedidos */
+html[data-theme="dark"] #adminModal .order-card,
+html[data-theme="dark"] #adminModal .admin-order-card{
+  background:#18231c !important;
+  border:1px solid #304238 !important;
+  color:#f7fbf8 !important;
+}
+
+html[data-theme="dark"] #adminModal .order-card h4,
+html[data-theme="dark"] #adminModal .order-card strong{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+html[data-theme="dark"] #adminModal .order-card small{
+  color:#b3c2b8 !important;
+}
+
+/* inputs, buscas, selects, textarea */
+html[data-theme="dark"] #adminModal input,
+html[data-theme="dark"] #adminModal select,
+html[data-theme="dark"] #adminModal textarea{
+  background:#121d16 !important;
+  color:#ffffff !important;
+  border:1px solid #33483b !important;
+  caret-color:#6ecb98 !important;
+}
+
+html[data-theme="dark"] #adminModal input::placeholder,
+html[data-theme="dark"] #adminModal textarea::placeholder{
+  color:#7f9286 !important;
+  opacity:1 !important;
+}
+
+html[data-theme="dark"] #adminModal select option{
+  background:#121d16 !important;
+  color:#ffffff !important;
+}
+
+/* botões ADM */
+html[data-theme="dark"] #adminModal button{
+  opacity:1 !important;
+}
+
+html[data-theme="dark"] #adminModal .admin-edit-btn,
+html[data-theme="dark"] #adminModal .edit-btn,
+html[data-theme="dark"] #adminModal .primary-btn{
+  background:#0f8f49 !important;
+  color:#ffffff !important;
+  border-color:#19a85b !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+html[data-theme="dark"] #adminModal .danger-mini,
+html[data-theme="dark"] #adminModal .delete-btn{
+  background:#3a1719 !important;
+  color:#ff8b8f !important;
+  border-color:#663033 !important;
+  -webkit-text-fill-color:#ff8b8f !important;
+}
+
+/* painéis brancos genéricos dentro do ADM */
+html[data-theme="dark"] #adminModal .admin-section,
+html[data-theme="dark"] #adminModal .admin-card,
+html[data-theme="dark"] #adminModal .panel,
+html[data-theme="dark"] #adminModal .panel-content{
+  background:#131d16 !important;
+  color:#f4faf6 !important;
+  border-color:#2c3c33 !important;
+}
+
+/* Correção direta de textos acinzentados/apagados no ADM */
+html[data-theme="dark"] #adminModal .admin-section *,
+html[data-theme="dark"] #adminModal .admin-card *,
+html[data-theme="dark"] #adminModal .panel-content *{
+  opacity:1;
+}
+
+/* ===== V15 - ADM DARK PROFUNDO: VISÃO GERAL + PRODUTOS + PEDIDOS ===== */
+
+/* Base dos blocos grandes inferiores */
+html[data-theme="dark"] #adminModal .admin-dashboard,
+html[data-theme="dark"] #adminModal .admin-overview,
+html[data-theme="dark"] #adminModal .admin-products-panel,
+html[data-theme="dark"] #adminModal .admin-orders-panel,
+html[data-theme="dark"] #adminModal .admin-section,
+html[data-theme="dark"] #adminModal .admin-card,
+html[data-theme="dark"] #adminModal .panel,
+html[data-theme="dark"] #adminModal .panel-content{
+  background:#101812 !important;
+  color:#f5faf7 !important;
+  border-color:#2d4035 !important;
+}
+
+/* Qualquer card branco interno do painel ADM */
+html[data-theme="dark"] #adminModal .overview-grid > *,
+html[data-theme="dark"] #adminModal .stats-grid > *,
+html[data-theme="dark"] #adminModal .admin-stats > *,
+html[data-theme="dark"] #adminModal .metric-grid > *,
+html[data-theme="dark"] #adminModal .admin-list-card,
+html[data-theme="dark"] #adminModal .recent-orders-card,
+html[data-theme="dark"] #adminModal .low-stock-card,
+html[data-theme="dark"] #adminModal .stock-attention-card,
+html[data-theme="dark"] #adminModal .management-card,
+html[data-theme="dark"] #adminModal .admin-block{
+  background:#17221b !important;
+  color:#f6fbf7 !important;
+  border:1px solid #30443a !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.22) !important;
+}
+
+/* Cards de métricas no topo da visão geral */
+html[data-theme="dark"] #adminModal .metric,
+html[data-theme="dark"] #adminModal .metric-box,
+html[data-theme="dark"] #adminModal .stat-card,
+html[data-theme="dark"] #adminModal .admin-stat,
+html[data-theme="dark"] #adminModal .summary-card{
+  background:#19251e !important;
+  color:#ffffff !important;
+  border:1px solid #32483b !important;
+}
+html[data-theme="dark"] #adminModal .metric *,
+html[data-theme="dark"] #adminModal .metric-box *,
+html[data-theme="dark"] #adminModal .stat-card *,
+html[data-theme="dark"] #adminModal .admin-stat *,
+html[data-theme="dark"] #adminModal .summary-card *{
+  opacity:1 !important;
+}
+
+/* Títulos e números nunca apagados */
+html[data-theme="dark"] #adminModal .metric strong,
+html[data-theme="dark"] #adminModal .metric-box strong,
+html[data-theme="dark"] #adminModal .stat-card strong,
+html[data-theme="dark"] #adminModal .admin-stat strong,
+html[data-theme="dark"] #adminModal .summary-card strong,
+html[data-theme="dark"] #adminModal .admin-list-card h3,
+html[data-theme="dark"] #adminModal .admin-list-card h4,
+html[data-theme="dark"] #adminModal .recent-orders-card h3,
+html[data-theme="dark"] #adminModal .low-stock-card h3{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  opacity:1 !important;
+}
+
+/* Textos auxiliares */
+html[data-theme="dark"] #adminModal .metric small,
+html[data-theme="dark"] #adminModal .metric-box small,
+html[data-theme="dark"] #adminModal .stat-card small,
+html[data-theme="dark"] #adminModal .admin-stat small,
+html[data-theme="dark"] #adminModal .summary-card small,
+html[data-theme="dark"] #adminModal .admin-list-card small,
+html[data-theme="dark"] #adminModal .recent-orders-card small,
+html[data-theme="dark"] #adminModal .low-stock-card small{
+  color:#aebfb4 !important;
+  -webkit-text-fill-color:#aebfb4 !important;
+  opacity:1 !important;
+}
+
+/* Linhas dos pedidos recentes / estoque */
+html[data-theme="dark"] #adminModal .recent-row,
+html[data-theme="dark"] #adminModal .mini-row,
+html[data-theme="dark"] #adminModal .stock-row,
+html[data-theme="dark"] #adminModal .admin-row,
+html[data-theme="dark"] #adminModal .order-mini,
+html[data-theme="dark"] #adminModal .stock-mini{
+  background:#1b2820 !important;
+  color:#eef6f1 !important;
+  border-color:#31453a !important;
+}
+html[data-theme="dark"] #adminModal .recent-row strong,
+html[data-theme="dark"] #adminModal .mini-row strong,
+html[data-theme="dark"] #adminModal .stock-row strong,
+html[data-theme="dark"] #adminModal .admin-row strong{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+html[data-theme="dark"] #adminModal .recent-row small,
+html[data-theme="dark"] #adminModal .mini-row small,
+html[data-theme="dark"] #adminModal .stock-row small,
+html[data-theme="dark"] #adminModal .admin-row small{
+  color:#a9bbb0 !important;
+  -webkit-text-fill-color:#a9bbb0 !important;
+}
+
+/* ===== PRODUTOS: cards compactos e blocos internos ===== */
+html[data-theme="dark"] #adminModal .admin-product-compact,
+html[data-theme="dark"] #adminModal .admin-product-card,
+html[data-theme="dark"] #adminModal .product-manage-card,
+html[data-theme="dark"] #adminModal .product-admin-card,
+html[data-theme="dark"] #adminModal .product-admin-row,
+html[data-theme="dark"] #adminModal .admin-product-item{
+  background:#17221b !important;
+  border:1px solid #30443a !important;
+  color:#f5faf7 !important;
+}
+
+/* Todo quadrado interno: destino, preço, estoque, status */
+html[data-theme="dark"] #adminModal .admin-product-card .product-meta-box,
+html[data-theme="dark"] #adminModal .admin-product-card .meta-box,
+html[data-theme="dark"] #adminModal .admin-product-card .admin-info-box,
+html[data-theme="dark"] #adminModal .admin-product-card .compact-cell,
+html[data-theme="dark"] #adminModal .product-manage-card .product-meta-box,
+html[data-theme="dark"] #adminModal .product-manage-card .meta-box,
+html[data-theme="dark"] #adminModal .product-manage-card .admin-info-box,
+html[data-theme="dark"] #adminModal .product-manage-card .compact-cell{
+  background:#1d2b22 !important;
+  color:#f4faf6 !important;
+  border:1px solid #354b3e !important;
+}
+
+/* Fallback forte para DIVs internas desses cards */
+html[data-theme="dark"] #adminModal .admin-product-card > div:not(.admin-product-actions):not(.product-image),
+html[data-theme="dark"] #adminModal .product-manage-card > div:not(.admin-product-actions):not(.product-image){
+  color:#f5faf7 !important;
+}
+
+/* Nome / categoria / GTIN */
+html[data-theme="dark"] #adminModal .admin-product-card h4,
+html[data-theme="dark"] #adminModal .admin-product-card strong,
+html[data-theme="dark"] #adminModal .product-manage-card h4,
+html[data-theme="dark"] #adminModal .product-manage-card strong{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  opacity:1 !important;
+}
+html[data-theme="dark"] #adminModal .admin-product-card small,
+html[data-theme="dark"] #adminModal .product-manage-card small{
+  color:#aebfb4 !important;
+  -webkit-text-fill-color:#aebfb4 !important;
+  opacity:1 !important;
+}
+
+/* Etiquetas como DESTINO / PREÇO / ESTOQUE / STATUS */
+html[data-theme="dark"] #adminModal .admin-product-card span,
+html[data-theme="dark"] #adminModal .product-manage-card span{
+  color:#b8c8be !important;
+  opacity:1 !important;
+}
+html[data-theme="dark"] #adminModal .admin-product-card .price,
+html[data-theme="dark"] #adminModal .product-manage-card .price{
+  color:#48d584 !important;
+  -webkit-text-fill-color:#48d584 !important;
+}
+
+/* Busca / formulário de produto */
+html[data-theme="dark"] #adminModal .product-form-card,
+html[data-theme="dark"] #adminModal .scanner-card,
+html[data-theme="dark"] #adminModal .form-section,
+html[data-theme="dark"] #adminModal .form-card{
+  background:#17221b !important;
+  color:#f5faf7 !important;
+  border:1px solid #30443a !important;
+}
+html[data-theme="dark"] #adminModal .product-form-card h3,
+html[data-theme="dark"] #adminModal .scanner-card h3,
+html[data-theme="dark"] #adminModal .form-section h3,
+html[data-theme="dark"] #adminModal .form-card h3{
+  color:#ffffff !important;
+}
+
+/* empty states */
+html[data-theme="dark"] #adminModal .empty{
+  color:#b8c7bd !important;
+  background:transparent !important;
+  -webkit-text-fill-color:#b8c7bd !important;
+}
+
+/* valores verdes permanecem destacados */
+html[data-theme="dark"] #adminModal .mini-value,
+html[data-theme="dark"] #adminModal .money,
+html[data-theme="dark"] #adminModal .positive,
+html[data-theme="dark"] #adminModal .attention{
+  color:#55db8d !important;
+  -webkit-text-fill-color:#55db8d !important;
+  opacity:1 !important;
 }
