@@ -1,5 +1,6 @@
+const MERCADO_PAGO_BACKEND_URL = (window.MERCADO_PAGO_BACKEND_URL || '').replace(/\/$/,'');
 
-// V15.7 - dados da conta ficam somente no Firebase Realtime Database
+// V15.13 - dados da conta ficam somente no Firebase Realtime Database
 try{
   localStorage.removeItem('mercado_profile');
   localStorage.removeItem('mercado_address');
@@ -264,6 +265,7 @@ function renderProfile(){
         <div class="profile-history-meta">
           <span>📅 ${new Date(o.date).toLocaleString('pt-BR')}</span>
           <span>🛒 ${orderQty} ${orderQty===1?'produto':'produtos'}</span>
+          <span>💳 ${paymentLabel(o.paymentMethod||'credit_card')}</span>
         </div>
         <div class="profile-history-items">${items}</div>
         <div class="profile-history-total">
@@ -293,7 +295,7 @@ function renderAdmin(){if(!requireAdmin())return;const orders=getOrders();$('#ad
     </div>
     <div class="admin-card-actions"><button type="button" class="edit-btn edit-text-btn" data-edit-product="${p.id}">✎ Editar produto</button><button type="button" class="delete-btn delete-text-btn" data-delete-product="${p.id}">🗑 Excluir</button></div>
   </article>`).join('')+`</div>`:'<div class="empty">Nenhum produto encontrado.</div>';
-  const recent=orders.slice(0,5);$('#adminRecentOrders').innerHTML=recent.length?recent.map(o=>`<div class="mini-row"><div><strong>${o.id} · ${o.customer?.name||'Cliente'}</strong><small>${new Date(o.date).toLocaleString('pt-BR')} · ${o.status}</small></div><div class="mini-value">${fmt(o.total)}</div></div>`).join(''):'<div class="empty">Nenhum pedido ainda.</div>';
+  const recent=orders.slice(0,5);$('#adminRecentOrders').innerHTML=recent.length?recent.map(o=>`<div class="mini-row"><div><strong>${o.id} · ${o.customer?.name||'Cliente'}</strong><small>${new Date(o.date).toLocaleString('pt-BR')} · ${o.status} · ${paymentLabel(o.paymentMethod||'credit_card')}</small></div><div class="mini-value">${fmt(o.total)}</div></div>`).join(''):'<div class="empty">Nenhum pedido ainda.</div>';
   $('#adminStockAlerts').innerHTML=low.length?low.sort((a,b)=>a.stock-b.stock).slice(0,6).map(p=>`<div class="mini-row"><div><strong>${p.name}</strong><small>${p.cat} · mínimo ${p.minStock??5}</small></div><div class="mini-value attention">${p.stock} un.</div></div>`).join(''):'<div class="empty">Estoque saudável.</div>';
   renderAdminOrders();updateProductPreview();updateMarginPreview()}
 function renderAdminOrders(){if(!isAdmin)return;const orders=getOrders();$('#adminOrdersList').innerHTML=orders.length?orders.map(o=>`<div class="order-card"><div class="order-card-head"><div><h4>${o.id}</h4><small>${new Date(o.date).toLocaleString('pt-BR')} • ${o.customer?.name||'Cliente'}</small></div><strong>${fmt(o.total)}</strong></div><div class="admin-order-actions"><select id="status-${o.id}">${['Recebido','Separando','Saiu para entrega','Pronto para retirada','Concluído','Cancelado'].map(st=>`<option ${o.status===st?'selected':''}>${st}</option>`).join('')}</select><button onclick="updateOrderStatus('${o.id}')">Atualizar</button><button class="danger-mini" onclick="deleteOrder('${o.id}')">Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum pedido recebido.</div>'}
@@ -373,7 +375,7 @@ $('#searchInput').oninput=renderProducts;$('#sortSelect').onchange=renderProduct
 $('#cartBtn').onclick=()=>{renderCart();$('#cartDrawer').classList.add('open');$('#overlay').classList.add('show')};$('#closeCart').onclick=$('#overlay').onclick=()=>{$('#cartDrawer').classList.remove('open');$('#overlay').classList.remove('show')};
 $('#showOffersBtn').onclick=()=>{onlyOffers=true;onlyFavorites=false;selectedCat='Todos';renderAll();$('#catalogTitle').scrollIntoView({behavior:'smooth'})};$('#favoritesBtn').onclick=()=>{onlyFavorites=true;onlyOffers=false;selectedCat='Todos';renderAll()};$('#freeShipBtn').onclick=()=>toast('Frete grátis acima de R$ 100');$('#couponsBtn').onclick=()=>toast('Use o cupom MERCADO10');$('#repeatBtn').onclick=()=>{const orders=getCustomerOrders();if(!orders.length)return toast('Nenhum pedido anterior nesta conta');repeatOrder(orders[0].id)};
 $$('.mode-btn').forEach(b=>b.onclick=()=>{orderMode=b.dataset.mode;$$('.mode-btn').forEach(x=>x.classList.toggle('active',x===b));renderCart()});$('#applyCouponBtn').onclick=()=>{const c=$('#couponInput').value.trim().toUpperCase();coupon=c==='MERCADO10'?c:'';toast(coupon?'Cupom aplicado: 10% OFF':'Cupom inválido');renderCart()};
-$('#checkoutBtn').onclick=()=>{if(!totals().count)return toast('Adicione produtos primeiro');$('#cartDrawer').classList.remove('open');$('#overlay').classList.remove('show');const f=$('#checkoutForm');f.elements.name.value=profile.name||'';f.elements.phone.value=profile.phone||'';f.elements.email.value=profile.email||'';const addr=profile.address||profile.address||'';f.elements.address.value=addr;$('#addressField').style.display=orderMode==='pickup'?'none':'block';f.elements.address.required=orderMode!=='pickup';$('#checkoutTotal').textContent=fmt(totals().total);openModal('#checkoutModal')};
+$('#checkoutBtn').onclick=()=>{if(!totals().count)return toast('Adicione produtos primeiro');$('#cartDrawer').classList.remove('open');$('#overlay').classList.remove('show');const f=$('#checkoutForm');f.elements.name.value=profile.name||'';f.elements.phone.value=profile.phone||'';f.elements.email.value=profile.email||'';const addr=profile.address||profile.address||'';f.elements.address.value=addr;$('#addressField').style.display=orderMode==='pickup'?'none':'block';f.elements.address.required=orderMode!=='pickup';$('#checkoutTotal').textContent=fmt(totals().total);refreshPaymentUI?.();openModal('#checkoutModal')};
 $$('[data-close]').forEach(b=>{
   const doClose=(ev)=>{
     if(ev){ev.preventDefault();ev.stopPropagation();}
@@ -388,7 +390,9 @@ if(profileCloseBtn){
   ['pointerdown','touchstart','touchend','click'].forEach(type=>profileCloseBtn.addEventListener(type,closeProfileNow,{capture:true,passive:false}));
 }
 $('#addressBtn').onclick=()=>{const a=profile.address||'';$('#addressForm').elements.address.value=a;openModal('#addressModal')};$('#addressForm').onsubmit=async e=>{e.preventDefault();const a=new FormData(e.target).get('address').trim();const next={...profile,address:a};try{if(!window.firebaseBackend?.saveProfile)throw new Error('Firebase indisponível');await window.firebaseBackend.saveProfile(next);profile=next;renderAll();closeModal('#addressModal');toast('Endereço salvo no banco e no navegador')}catch(err){toast('Falha no banco. Endereço não foi salvo localmente')}};
-$('#checkoutForm').onsubmit=async e=>{e.preventDefault();const btn=e.target.querySelector('button[type=submit]');const oldText=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Salvando no banco...'}try{const t=totals(),fd=new FormData(e.target),data=Object.fromEntries(fd);if(orderMode==='pickup')data.address='Retirada no mercado';for(const [pid,q] of Object.entries(cart)){const p=products.find(x=>x.id==pid);if(!p||!p.active||q>p.stock){toast('O estoque mudou. Revise o carrinho.');renderAll();return}}const order={id:'PED'+Date.now().toString().slice(-6),date:new Date().toISOString(),customer:data,items:Object.entries(cart),subtotal:t.subtotal,discount:t.discount,delivery:t.delivery,total:t.total,mode:orderMode,status:'Recebido'};const nextProfile={...profile,name:data.name,phone:data.phone,email:data.email,address:orderMode==='delivery'?data.address:(profile.address||'')};if(!window.firebaseBackend?.commitOrder)throw new Error('Firebase indisponível');await window.firebaseBackend.commitOrder(order,{...cart},nextProfile);profile=nextProfile;cart={};coupon='';persist();closeModal('#checkoutModal');$('#successText').textContent=`${order.id} • ${fmt(order.total)} • ${orderMode==='delivery'?'Entrega':'Retirada'}`;openModal('#successModal');renderAll()}catch(err){console.error(err);toast(err?.message||'Falha ao salvar pedido no banco. Nada foi salvo localmente')}finally{if(btn){btn.disabled=false;btn.textContent=oldText}}};
+$('#checkoutForm').onsubmit=async e=>{e.preventDefault();const btn=e.target.querySelector('button[type=submit]');const oldText=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Salvando no banco...'}try{const t=totals(),fd=new FormData(e.target),data=Object.fromEntries(fd);const selectedPayment=normalizePaymentMethod(data.paymentMethod||data.payment||'');if(orderMode==='pickup')data.address='Retirada no mercado';for(const [pid,q] of Object.entries(cart)){const p=products.find(x=>x.id==pid);if(!p||!p.active||q>p.stock){toast('O estoque mudou. Revise o carrinho.');renderAll();return}}const paymentMethod=(f.elements.paymentMethod?.value||'credit_card');
+    const cashChangeFor=paymentMethod==='cash'?Number(f.elements.cashChangeFor?.value||0):0;
+    const order={paymentMethod:selectedPayment,paymentLabel:paymentLabel(selectedPayment),paymentMethod,paymentLabel:paymentLabel(paymentMethod),cashChangeFor,id:'PED'+Date.now().toString().slice(-6),date:new Date().toISOString(),customer:data,items:Object.entries(cart),subtotal:t.subtotal,discount:t.discount,delivery:t.delivery,total:t.total,mode:orderMode,status:'Recebido'};const nextProfile={...profile,name:data.name,phone:data.phone,email:data.email,address:orderMode==='delivery'?data.address:(profile.address||'')};if(!window.firebaseBackend?.commitOrder)throw new Error('Firebase indisponível');await window.firebaseBackend.commitOrder(order,{...cart},nextProfile);profile=nextProfile;cart={};coupon='';persist();closeModal('#checkoutModal');$('#successText').textContent=`${order.id} • ${fmt(order.total)} • ${orderMode==='delivery'?'Entrega':'Retirada'}`;openModal('#successModal');renderAll()}catch(err){console.error(err);toast(err?.message||'Falha ao salvar pedido no banco. Nada foi salvo localmente')}finally{if(btn){btn.disabled=false;btn.textContent=oldText}}};
 $('#ordersBtn').onclick=()=>{renderOrders();openModal('#ordersModal')};function openProfile(){renderProfile();openModal('#profileModal')}$('#profileForm').onsubmit=async e=>{
   e.preventDefault();
   const d=Object.fromEntries(new FormData(e.target));
@@ -589,7 +593,7 @@ window.addEventListener('storage',e=>{
 setTimeout(updateAdvancedProfile,300);
 
 
-// ===== V15.7 - ACESSO ROBUSTO AO PERFIL =====
+// ===== V15.13 - ACESSO ROBUSTO AO PERFIL =====
 function openUserProfile(ev){
   if(ev){ev.preventDefault();ev.stopPropagation();}
   const modal=document.getElementById('profileModal');
@@ -618,7 +622,7 @@ document.addEventListener('click',e=>{
   if(el) openUserProfile(e);
 });
 
-// V15.7 - garantir Perfil no topo e rodapé após carregar DOM
+// V15.13 - garantir Perfil no topo e rodapé após carregar DOM
 window.addEventListener('DOMContentLoaded',()=>{
   ['profileTopBtn','profileBtn'].forEach(id=>{
     const btn=document.getElementById(id);
@@ -631,7 +635,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-// V15.7 - reforço dos botões em Meus pedidos
+// V15.13 - reforço dos botões em Meus pedidos
 document.addEventListener('click',e=>{
   const btn=e.target.closest && e.target.closest('[data-repeat-order]');
   if(!btn)return;
@@ -641,7 +645,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// ===== V15.7 - PERFIL: TOPO E RODAPÉ =====
+// ===== V15.13 - PERFIL: TOPO E RODAPÉ =====
 function openProfileReliable(ev){
   if(ev){
     ev.preventDefault();
@@ -694,7 +698,7 @@ if(document.readyState==='loading'){
 }
 
 
-// V15.7 - ações dos produtos compatíveis com IDs do Firebase
+// V15.13 - ações dos produtos compatíveis com IDs do Firebase
 document.addEventListener('click',e=>{
   const editBtn=e.target.closest && e.target.closest('[data-edit-product]');
   if(editBtn){
@@ -713,7 +717,7 @@ document.addEventListener('click',e=>{
 });
 
 
-// V15.7 — botão "Voltar às compras" da confirmação do pedido
+// V15.13 — botão "Voltar às compras" da confirmação do pedido
 document.addEventListener('click', function(e){
   const btn = e.target.closest && e.target.closest(
     '#orderSuccess button, #successModal button, #orderConfirmed button, .order-success button, .success-modal button, [data-back-shopping]'
@@ -749,3 +753,73 @@ document.addEventListener('click', function(e){
     window.scrollTo({top:0,behavior:'smooth'});
   }
 }, true);
+
+// V15.13 - login do cliente
+let customerAuthMode='login';
+function setCustomerAuthMode(mode){customerAuthMode=mode==='register'?'register':'login';document.getElementById('customerLoginTab')?.classList.toggle('active',customerAuthMode==='login');document.getElementById('customerRegisterTab')?.classList.toggle('active',customerAuthMode==='register');const b=document.getElementById('customerAuthSubmit');if(b)b.textContent=customerAuthMode==='login'?'Entrar e carregar meus dados':'Criar conta e salvar dados';}
+async function handleCustomerAuth(){const email=(document.getElementById('customerAuthEmail')?.value||'').trim();const password=document.getElementById('customerAuthPassword')?.value||'';if(!email||!password)return toast('Digite e-mail e senha');try{if(customerAuthMode==='login'){profile=await window.firebaseBackend.loginCustomer(email,password);renderAll();renderProfile();toast('Dados carregados do banco');}else{const f=document.getElementById('profileForm');const d=f?Object.fromEntries(new FormData(f)):{};const next={name:(d.name||'').trim(),phone:(d.phone||'').trim(),email,address:(d.address||'').trim()};if(!next.name||!next.phone)return toast('Preencha nome e telefone');profile=await window.firebaseBackend.registerCustomer(email,password,next);renderAll();renderProfile();setCustomerAuthMode('login');toast('Conta criada no Firebase');}}catch(err){const code=String(err?.code||'');let msg=err?.message||'Falha no login';if(code.includes('invalid-credential')||code.includes('wrong-password'))msg='E-mail ou senha incorretos';if(code.includes('user-not-found'))msg='Conta não encontrada';if(code.includes('email-already-in-use'))msg='Esse e-mail já tem conta. Use Entrar.';toast(msg);}}
+document.addEventListener('DOMContentLoaded',()=>{document.getElementById('customerLoginTab')?.addEventListener('click',()=>setCustomerAuthMode('login'));document.getElementById('customerRegisterTab')?.addEventListener('click',()=>setCustomerAuthMode('register'));document.getElementById('customerAuthSubmit')?.addEventListener('click',handleCustomerAuth);});
+
+
+// ===== V15.13 - FORMAS DE PAGAMENTO =====
+function paymentLabel(value){
+  return value==='pix'?'Pix':value==='cash'?'Dinheiro na entrega':'Cartão de crédito';
+}
+function refreshPaymentUI(){
+  document.querySelectorAll('.payment-option').forEach(label=>{
+    const input=label.querySelector('input[name="paymentMethod"]');
+    label.classList.toggle('active',!!input?.checked);
+  });
+  const selected=document.querySelector('input[name="paymentMethod"]:checked')?.value||'credit_card';
+  const cashBox=document.getElementById('cashChangeBox');
+  if(cashBox)cashBox.hidden=selected!=='cash';
+}
+document.addEventListener('change',e=>{
+  if(e.target?.matches?.('input[name="paymentMethod"]'))refreshPaymentUI();
+});
+document.addEventListener('DOMContentLoaded',refreshPaymentUI);
+
+
+// ===== V15.13 - MERCADO PAGO REAL =====
+async function createMercadoPagoCheckout(order){
+  if(!MERCADO_PAGO_BACKEND_URL){
+    throw new Error('Configure o endereço do backend Mercado Pago');
+  }
+
+  const response=await fetch(MERCADO_PAGO_BACKEND_URL+'/api/mercadopago/preference',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      orderId:order.id,
+      total:Number(order.total||0),
+      customer:order.customer||{},
+      items:(order.items||[]).map(([pid,q])=>{
+        const p=products.find(x=>String(x.id)===String(pid));
+        return {
+          id:String(pid),
+          title:p?.name||'Produto',
+          quantity:Number(q||0),
+          unit_price:Number(p?.price||0)
+        };
+      }),
+      paymentMethod:order.paymentMethod||order.customer?.payment||''
+    })
+  });
+
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok){
+    throw new Error(data?.message||'Falha ao iniciar pagamento Mercado Pago');
+  }
+  if(!data.init_point){
+    throw new Error('Mercado Pago não retornou o link de pagamento');
+  }
+  return data;
+}
+
+function normalizePaymentMethod(raw){
+  const v=String(raw||'').trim().toLowerCase();
+  if(v.includes('pix')) return 'pix';
+  if(v.includes('cart')) return 'credit_card';
+  if(v.includes('dinheiro')) return 'cash';
+  return v||'credit_card';
+}

@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon-192.svg" />
-  <title>Mercado Fácil PRO V15.7</title>
-  <link rel="stylesheet" href="styles.css?v=15.7" />
+  <title>Mercado Fácil PRO V15.13</title>
+  <link rel="stylesheet" href="styles.css?v=15.13" />
 </head>
 <body>
   <header class="topbar">
@@ -83,6 +83,33 @@
       <label id="addressField">Endereço<input name="address" placeholder="Rua, número, bairro" /></label>
       <div class="form-grid"><label>Pagamento<select name="payment" required><option value="">Selecione</option><option>Pix</option><option>Dinheiro</option><option>Cartão na entrega</option></select></label><label>Horário<select name="time"><option>O mais rápido possível</option><option>Em até 1 hora</option><option>Agendar</option></select></label></div>
       <label>Observação<textarea name="notes" rows="3" placeholder="Troco, referência, substituições..."></textarea></label>
+      
+      <fieldset class="payment-methods">
+        <legend>Forma de pagamento</legend>
+        <div class="payment-grid">
+          <label class="payment-option active">
+            <input type="radio" name="paymentMethod" value="credit_card" checked>
+            <span class="payment-icon">💳</span>
+            <span><b>Cartão de crédito</b><small>Pagar na entrega</small></span>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="pix">
+            <span class="payment-icon">◆</span>
+            <span><b>Pix</b><small>Pagamento por Pix</small></span>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="cash">
+            <span class="payment-icon">💵</span>
+            <span><b>Dinheiro</b><small>Pagar na entrega</small></span>
+          </label>
+        </div>
+        <div class="cash-change-box" id="cashChangeBox" hidden>
+          <label>Troco para quanto?
+            <input type="number" name="cashChangeFor" min="0" step="0.01" placeholder="Ex.: 150,00">
+          </label>
+        </div>
+      </fieldset>
+
       <div class="checkout-total">Total do pedido <strong id="checkoutTotal"></strong></div>
       <button class="primary-btn" type="submit">Confirmar pedido</button>
     </form>
@@ -93,114 +120,96 @@
   <section class="modal orders-modal" id="ordersModal"><div class="modal-card"><div class="drawer-head"><div><span class="eyebrow dark">HISTÓRICO</span><h2>Meus pedidos</h2></div><button class="close-btn" data-close="#ordersModal">✕</button></div><div class="panel-content" id="ordersList"></div></div></section>
 
   <section class="modal" id="profileModal">
-  <div class="modal-card profile-card">
-    <div class="drawer-head profile-head">
+  <div class="modal-card profile-card profile-pro-v159">
+    <div class="drawer-head profile-head profile-pro-head">
       <div class="profile-head-copy">
         <span class="eyebrow dark">MINHA CONTA</span>
         <h2>Perfil do cliente</h2>
-        <small id="profileRoleLabel">Conta de cliente</small>
-        <div id="profileDbStatus" class="profile-db-status" role="status" aria-live="polite">
-          <span class="profile-db-dot" aria-hidden="true"></span>
-          <span class="profile-db-label">🔥 Realtime Database online</span>
+        <div class="profile-head-meta">
+          <small id="profileRoleLabel">Conta de cliente</small>
+          <div id="profileDbStatus" class="profile-db-status" role="status" aria-live="polite">
+            <span class="profile-db-dot" aria-hidden="true"></span>
+            <span class="profile-db-label">🔥 Realtime Database online</span>
+          </div>
         </div>
       </div>
       <button class="close-btn" id="profileCloseBtn" type="button" aria-label="Fechar perfil" data-close="#profileModal" onclick="forceCloseProfile(event)">✕</button>
     </div>
-    
-    <div class="profile-dashboard">
-      <div class="profile-identity-card">
-        <div class="profile-avatar-lg" id="profileAvatarLg">👤</div>
-        <div class="profile-identity-copy">
-          <span class="profile-mini-label">CONTA DO CLIENTE</span>
-          <h3 id="profileDisplayName">Faça seu cadastro</h3>
-          <p id="profileDisplayEmail">Seu e-mail aparecerá aqui</p>
-          <div class="profile-status-line">
-            <span class="profile-status-dot"></span>
-            <span id="profileAccountStatus">Conta ativa</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="profile-stats-grid">
-        <div class="profile-stat-card">
-          <span>🧾</span>
-          <strong id="profileOrderCount">0</strong>
-          <small>Pedidos</small>
+    <div class="profile-pro-content">
+      <section class="profile-section profile-access-section">
+        <div class="profile-section-heading">
+          <div><span class="profile-section-step">1</span><div><small>ACESSO SEGURO</small><h3>Entrar na minha conta</h3></div></div>
+          <span class="profile-section-icon">🔐</span>
         </div>
-        <div class="profile-stat-card">
-          <span>💰</span>
-          <strong id="profileSpentTotal">R$ 0,00</strong>
-          <small>Total comprado</small>
-        </div>
-        <div class="profile-stat-card">
-          <span>❤️</span>
-          <strong id="profileFavoriteCount">0</strong>
-          <small>Favoritos</small>
-        </div>
-      </div>
+        <section class="customer-auth-box" id="customerAuthBox">
+          <div class="customer-auth-tabs">
+            <button type="button" class="customer-auth-tab active" id="customerLoginTab">Entrar</button>
+            <button type="button" class="customer-auth-tab" id="customerRegisterTab">Criar conta</button>
+          </div>
+          <div class="customer-auth-fields">
+            <label><span>E-mail</span><input id="customerAuthEmail" type="email" autocomplete="email" placeholder="seuemail@exemplo.com"></label>
+            <label><span>Senha</span><input id="customerAuthPassword" type="password" autocomplete="current-password" placeholder="Sua senha"></label>
+          </div>
+          <button type="button" id="customerAuthSubmit">Entrar e carregar meus dados</button>
+          <small id="customerAuthHelp">Se a conta já existir, seus dados serão carregados automaticamente.</small>
+        </section>
+      </section>
 
-      <div class="profile-info-grid">
-        <div class="profile-info-card">
-          <div class="profile-info-icon">📞</div>
-          <div>
-            <small>Telefone</small>
-            <strong id="profilePhoneView">Não informado</strong>
+      <section class="profile-section profile-overview-section">
+        <div class="profile-section-heading compact-heading">
+          <div><span class="profile-section-step">2</span><div><small>RESUMO DA CONTA</small><h3>Minha área</h3></div></div>
+        </div>
+        <div class="profile-dashboard">
+          <div class="profile-identity-card">
+            <div class="profile-avatar-lg" id="profileAvatarLg">👤</div>
+            <div class="profile-identity-copy">
+              <span class="profile-mini-label">CLIENTE</span>
+              <h3 id="profileDisplayName">Faça seu cadastro</h3>
+              <p id="profileDisplayEmail">Seu e-mail aparecerá aqui</p>
+              <div class="profile-status-line"><span class="profile-status-dot"></span><span id="profileAccountStatus">Conta ativa</span></div>
+            </div>
+          </div>
+          <div class="profile-stats-grid">
+            <div class="profile-stat-card"><span>🛒</span><strong id="profileOrderCount">0</strong><small>Produtos comprados</small></div>
+            <div class="profile-stat-card"><span>💰</span><strong id="profileSpentTotal">R$ 0,00</strong><small>Total comprado</small></div>
+            <div class="profile-stat-card"><span>❤️</span><strong id="profileFavoriteCount">0</strong><small>Favoritos</small></div>
+          </div>
+          <div class="profile-info-grid">
+            <div class="profile-info-card"><div class="profile-info-icon">📞</div><div><small>Telefone</small><strong id="profilePhoneView">Não informado</strong></div></div>
+            <div class="profile-info-card"><div class="profile-info-icon">📍</div><div><small>Endereço principal</small><strong id="profileAddressView">Não informado</strong></div></div>
+            <div class="profile-info-card"><div class="profile-info-icon">📧</div><div><small>E-mail</small><strong id="profileEmailView">Não informado</strong></div></div>
+            <div class="profile-info-card"><div class="profile-info-icon">🛡️</div><div><small>Segurança</small><strong>Dados no Firebase</strong></div></div>
+          </div>
+          <div class="profile-shortcuts">
+            <button type="button" class="profile-shortcut" id="profileOrdersShortcut"><span>🧾</span><b>Pedidos</b><small>Histórico</small></button>
+            <button type="button" class="profile-shortcut" id="profileFavoritesShortcut"><span>❤️</span><b>Favoritos</b><small>Produtos salvos</small></button>
+            <button type="button" class="profile-shortcut" id="profileAddressShortcut"><span>📍</span><b>Endereço</b><small>Alterar entrega</small></button>
           </div>
         </div>
-        <div class="profile-info-card">
-          <div class="profile-info-icon">📍</div>
-          <div>
-            <small>Endereço principal</small>
-            <strong id="profileAddressView">Não informado</strong>
-          </div>
-        </div>
-        <div class="profile-info-card">
-          <div class="profile-info-icon">📧</div>
-          <div>
-            <small>E-mail</small>
-            <strong id="profileEmailView">Não informado</strong>
-          </div>
-        </div>
-        <div class="profile-info-card">
-          <div class="profile-info-icon">🔒</div>
-          <div>
-            <small>Segurança</small>
-            <strong>Conta protegida</strong>
-          </div>
-        </div>
-      </div>
+      </section>
 
-      <div class="profile-shortcuts">
-        <button type="button" class="profile-shortcut" id="profileOrdersShortcut">
-          <span>🧾</span><b>Meus pedidos</b><small>Ver histórico completo</small>
-        </button>
-        <button type="button" class="profile-shortcut" id="profileFavoritesShortcut">
-          <span>❤️</span><b>Favoritos</b><small>Produtos salvos</small>
-        </button>
-        <button type="button" class="profile-shortcut" id="profileAddressShortcut">
-          <span>📍</span><b>Endereço</b><small>Alterar entrega</small>
-        </button>
-      </div>
+      <section class="profile-section profile-data-section">
+        <div class="profile-section-heading">
+          <div><span class="profile-section-step">3</span><div><small>CADASTRO</small><h3>Meus dados</h3></div></div>
+          <span class="profile-section-icon">✏️</span>
+        </div>
+        <form id="profileForm" class="profile-pro-form">
+          <div class="profile-form-group"><span class="profile-form-group-title">Dados pessoais</span><div class="form-grid"><label>Nome<input name="name" placeholder="Seu nome" /></label><label>Telefone<input name="phone" placeholder="Seu telefone" /></label></div></div>
+          <div class="profile-form-group"><span class="profile-form-group-title">Contato e entrega</span><label>E-mail<input name="email" type="email" placeholder="seu@email.com" /></label><label>Endereço principal<input name="address" placeholder="Rua, número, bairro, cidade" /></label></div>
+          <div class="profile-form-group profile-security-group"><span class="profile-form-group-title">Segurança / administrador</span><label>Senha da conta<input name="password" type="password" autocomplete="current-password" placeholder="Digite apenas quando necessário" /></label><div id="adminAuthHint" class="admin-auth-hint">Para o administrador, use a senha cadastrada no Firebase Authentication.</div></div>
+          <button class="primary-btn profile-save-btn">Salvar alterações</button>
+          <button type="button" class="admin-access-btn" id="adminAccessBtn" hidden>🔐 Abrir painel administrativo</button>
+        </form>
+      </section>
+
+      <section class="profile-section profile-history-section">
+        <div class="profile-section-heading compact-heading"><div><span class="profile-section-step">4</span><div><small>HISTÓRICO</small><h3>Minhas compras</h3></div></div><span class="profile-section-icon">🧾</span></div>
+        <div class="profile-orders-block"><div id="profileOrdersList"></div></div>
+      </section>
     </div>
-
-    
-    <div class="profile-edit-title">
-      <div>
-        <span class="profile-mini-label">MEUS DADOS</span>
-        <h3>Editar informações</h3>
-      </div>
-      <span>✏️</span>
-    </div>
-    <form id="profileForm">
-      <div class="form-grid"><label>Nome<input name="name" placeholder="Seu nome" /></label><label>Telefone<input name="phone" placeholder="Seu telefone" /></label></div>
-      <label>E-mail<input name="email" type="email" placeholder="seu@email.com" /></label>
-      <label>Senha da conta<input name="password" type="password" autocomplete="current-password" placeholder="Sua senha" /></label><div id="adminAuthHint" class="admin-auth-hint">A senha do administrador é a cadastrada no Firebase Authentication.</div>
-      <label>Endereço principal<input name="address" placeholder="Rua, número, bairro, cidade" /></label>
-      <button class="primary-btn">Salvar / entrar na conta</button>
-      <button type="button" class="admin-access-btn" id="adminAccessBtn" hidden>🔐 Abrir painel administrativo</button>
-    </form>
-    <div class="profile-orders-block"><div class="section-title compact"><div><span class="eyebrow dark">HISTÓRICO</span><h3>Minhas compras</h3></div><strong id="profileOrderCount">0</strong></div><div id="profileOrdersList"></div></div>
-  </div></section>
+  </div>
+</section>
 
   <section class="modal" id="adminLoginModal"><div class="modal-card small-card secure-card">
     <div class="drawer-head"><div><span class="eyebrow dark">ÁREA RESTRITA</span><h2>Confirmação do administrador</h2></div><button class="close-btn" data-close="#adminLoginModal">✕</button></div>
@@ -277,8 +286,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js?v=15.7"></script>
-  <script src="app.js?v=15.7"></script>
-  <script src="firebase-bridge.js?v=15.7"></script>
+  <script src="firebase-config.js?v=15.13"></script>
+  <script>
+window.MERCADO_PAGO_BACKEND_URL = ''; // Ex.: https://seu-backend.onrender.com
+</script>
+<script src="app.js?v=15.13"></script>
+  <script src="firebase-bridge.js?v=15.13"></script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+MERCADO PAGO REAL - COMO LIGAR
+
+1. Publique a pasta mercadopago-backend no Render.
+2. No Render, configure:
+   MERCADO_PAGO_ACCESS_TOKEN = seu Access Token de PRODUÇÃO do Mercado Pago
+   APP_URL = URL do seu Mercado Fácil no GitHub Pages
+
+3. No index.html do app, ANTES do app.js, adicione:
+   <script>
+     window.MERCADO_PAGO_BACKEND_URL='https://SEU-BACKEND.onrender.com';
+   </script>
+
+4. No painel Mercado Pago, configure Webhook:
+   https://SEU-BACKEND.onrender.com/api/mercadopago/webhook
+
+IMPORTANTE:
+- Nunca coloque o Access Token no HTML.
+- Cartão e Pix são enviados para o Checkout Pro oficial do Mercado Pago.
+- Dinheiro continua sendo pago na entrega.

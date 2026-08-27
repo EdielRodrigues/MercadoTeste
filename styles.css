@@ -930,7 +930,7 @@ html[data-theme="dark"] #adminModal .attention{
   z-index:5 !important;
 }
 
-/* V15.7 — somente textos pequenos dos cards de produtos no ADM / tema escuro */
+/* V15.10 — somente textos pequenos dos cards de produtos no ADM / tema escuro */
 body.dark #adminModal .admin-product-card .admin-info-cell span,
 body.dark #adminModal .admin-product-card .admin-info-cell small,
 body.dark #adminModal .admin-product-card .admin-product-main small,
@@ -941,7 +941,7 @@ body.dark #adminModal .admin-product-card .product-meta small {
   -webkit-text-fill-color:#1677ff !important;
 }
 
-/* V15.7 — clique do botão de finalização */
+/* V15.10 — clique do botão de finalização */
 #orderSuccess button,
 #successModal button,
 #orderConfirmed button,
@@ -954,7 +954,7 @@ body.dark #adminModal .admin-product-card .product-meta small {
   touch-action:manipulation !important;
 }
 
-/* V15.7 — textos dos quadros brancos do produto em azul forte */
+/* V15.10 — textos dos quadros brancos do produto em azul forte */
 #adminModal .admin-info-cell span,
 #adminModal .admin-info-cell strong,
 #adminModal .admin-info-cell small{
@@ -970,7 +970,7 @@ html[data-theme="dark"] #adminModal .admin-info-cell small{
   opacity:1 !important;
 }
 
-/* V15.7 — histórico de compras organizado em cards */
+/* V15.10 — histórico de compras organizado em cards */
 .profile-orders-block{
   padding:18px !important;
 }
@@ -1069,4 +1069,402 @@ html[data-theme="dark"] .profile-history-total span{
 }
 html[data-theme="dark"] .profile-history-items{
   border-color:#31453a !important;
+}
+
+.customer-auth-box{margin:18px;padding:16px;border-radius:18px;border:1px solid #d9e4dd;background:#fff}.customer-auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.customer-auth-tab{padding:11px;border-radius:12px;border:1px solid #d9e4dd;font-weight:800}.customer-auth-tab.active,#customerAuthSubmit{background:#0d934b;color:#fff}.customer-auth-box label{display:block;margin-top:9px;font-size:12px;font-weight:800}.customer-auth-box input{width:100%;margin-top:5px}#customerAuthSubmit{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;font-weight:900}#customerAuthHelp{display:block;margin-top:8px}html[data-theme="dark"] .customer-auth-box{background:#18231c;border-color:#31453a}
+
+/* ===== V15.10 - PERFIL PRO ORGANIZADO ===== */
+#profileModal .profile-pro-v159{max-height:96vh;background:#f4f8f5!important}
+#profileModal .profile-pro-head{position:sticky;top:0;z-index:15;padding:18px 20px;background:rgba(255,255,255,.97)!important;backdrop-filter:blur(16px);border-bottom:1px solid #e2eae4!important}
+#profileModal .profile-pro-head h2{font-size:26px;margin:2px 0 4px}
+#profileModal .profile-head-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#profileModal .profile-db-status{width:auto!important;margin:0!important;padding:7px 10px!important;border-radius:999px!important;font-size:10px!important}
+#profileModal .profile-pro-content{padding:14px;display:grid;gap:14px}
+#profileModal .profile-section{background:#fff;border:1px solid #e0e9e2;border-radius:24px;overflow:hidden;box-shadow:0 8px 25px rgba(25,70,42,.06)}
+#profileModal .profile-section-heading{padding:16px 17px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #edf2ee}
+#profileModal .profile-section-heading>div{display:flex;align-items:center;gap:10px;min-width:0}
+#profileModal .profile-section-heading small{display:block;color:#718078;font-size:9px;font-weight:950;letter-spacing:1.1px}
+#profileModal .profile-section-heading h3{margin:2px 0 0;font-size:17px}
+#profileModal .profile-section-step{width:29px;height:29px;border-radius:10px;background:#e9f7ef;color:#0a8645;display:grid;place-items:center;font-size:12px;font-weight:950;flex:0 0 auto}
+#profileModal .profile-section-icon{font-size:20px}
+#profileModal .customer-auth-box{margin:0!important;padding:14px 16px 17px!important;border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important}
+#profileModal .customer-auth-tabs{background:#edf3ef;padding:4px;border-radius:14px;margin:0 0 12px!important}
+#profileModal .customer-auth-tab{border:0!important;background:transparent!important;min-height:42px;color:#526259}
+#profileModal .customer-auth-tab.active{background:#0a934c!important;color:#fff!important;box-shadow:0 5px 14px rgba(10,147,76,.18)}
+#profileModal .customer-auth-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#profileModal .customer-auth-fields label{margin:0!important}
+#profileModal .customer-auth-fields label>span{display:block;margin-bottom:5px}
+#profileModal #customerAuthSubmit{min-height:48px;margin-top:12px!important;border-radius:14px!important}
+#profileModal #customerAuthHelp{padding-top:8px;color:#718078;font-size:10px;line-height:1.35}
+#profileModal .profile-dashboard{padding:14px!important;gap:11px!important}
+#profileModal .profile-identity-card{box-shadow:none!important;border-radius:18px!important;padding:14px!important}
+#profileModal .profile-avatar-lg{width:58px;height:58px;border-radius:17px;font-size:24px}
+#profileModal .profile-identity-copy h3{font-size:18px}
+#profileModal .profile-stats-grid{gap:7px}
+#profileModal .profile-stat-card{padding:10px 6px;border-radius:15px;box-shadow:none!important}
+#profileModal .profile-stat-card span{font-size:18px}
+#profileModal .profile-stat-card strong{font-size:14px}
+#profileModal .profile-stat-card small{font-size:8.5px;line-height:1.1}
+#profileModal .profile-info-grid{gap:8px}
+#profileModal .profile-info-card{padding:11px;border-radius:15px}
+#profileModal .profile-info-icon{width:32px;height:32px;border-radius:10px}
+#profileModal .profile-shortcuts{gap:7px}
+#profileModal .profile-shortcut{border-radius:15px;padding:10px 5px;box-shadow:none!important}
+#profileModal .profile-shortcut span{font-size:18px}
+#profileModal .profile-pro-form{padding:14px 16px 17px!important}
+#profileModal .profile-form-group{padding:13px;border:1px solid #e5ece7;border-radius:16px;margin-bottom:10px;background:#fbfdfb}
+#profileModal .profile-form-group-title{display:block;margin-bottom:9px;color:#637269;font-size:9px;font-weight:950;letter-spacing:1px;text-transform:uppercase}
+#profileModal .profile-pro-form label{margin-bottom:9px}
+#profileModal .profile-pro-form input{min-height:45px}
+#profileModal .profile-security-group{background:#f7faf8}
+#profileModal .admin-auth-hint{margin:0!important;font-size:9.5px}
+#profileModal .profile-save-btn{min-height:49px;font-size:14px}
+#profileModal .profile-orders-block{padding:13px 16px 17px!important}
+#profileModal .profile-history-card{margin:0 0 10px}
+#profileModal .profile-history-card:last-child{margin-bottom:0}
+html[data-theme="dark"] #profileModal .profile-pro-v159{background:#0d1511!important}
+html[data-theme="dark"] #profileModal .profile-pro-head{background:rgba(17,26,21,.97)!important;border-color:#2c3d33!important}
+html[data-theme="dark"] #profileModal .profile-section{background:#151f19!important;border-color:#2d4035!important}
+html[data-theme="dark"] #profileModal .profile-section-heading{border-color:#293a31!important}
+html[data-theme="dark"] #profileModal .profile-section-step{background:#173326;color:#6de3a0}
+html[data-theme="dark"] #profileModal .customer-auth-box{background:#151f19!important}
+html[data-theme="dark"] #profileModal .customer-auth-tabs{background:#1c2922!important}
+html[data-theme="dark"] #profileModal .customer-auth-tab{color:#afbeb5!important}
+html[data-theme="dark"] #profileModal .customer-auth-tab.active{color:#fff!important}
+html[data-theme="dark"] #profileModal .profile-form-group{background:#18231c;border-color:#304238}
+html[data-theme="dark"] #profileModal .profile-security-group{background:#162019}
+@media(max-width:520px){
+ #profileModal .profile-pro-content{padding:10px;gap:10px}
+ #profileModal .profile-pro-head{padding:15px 16px}
+ #profileModal .profile-pro-head h2{font-size:23px}
+ #profileModal .profile-head-meta{align-items:flex-start;flex-direction:column;gap:5px}
+ #profileModal .customer-auth-fields{grid-template-columns:1fr}
+ #profileModal .profile-info-grid{grid-template-columns:1fr 1fr!important}
+ #profileModal .profile-info-card{min-width:0}
+ #profileModal .profile-info-card strong{font-size:11px}
+ #profileModal .form-grid{grid-template-columns:1fr}
+}
+
+/* ===== V15.10 - FORMULÁRIO DE PRODUTO LEGÍVEL NO TEMA ESCURO ===== */
+html[data-theme="dark"] #adminModal .product-editor{
+  background:#121b15 !important;
+  color:#f4faf6 !important;
+  border-color:#2f4337 !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor fieldset,
+html[data-theme="dark"] #adminModal .category-picker,
+html[data-theme="dark"] #adminModal .category-section,
+html[data-theme="dark"] #adminModal .form-section,
+html[data-theme="dark"] #adminModal .destination-card,
+html[data-theme="dark"] #adminModal .category-destination,
+html[data-theme="dark"] #adminModal .category-map,
+html[data-theme="dark"] #adminModal .category-panel{
+  background:#18231c !important;
+  color:#f6fbf7 !important;
+  border-color:#33483c !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor legend,
+html[data-theme="dark"] #adminModal .product-editor label,
+html[data-theme="dark"] #adminModal .product-editor h2,
+html[data-theme="dark"] #adminModal .product-editor h3,
+html[data-theme="dark"] #adminModal .product-editor h4,
+html[data-theme="dark"] #adminModal .product-editor strong{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  opacity:1 !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor .eyebrow,
+html[data-theme="dark"] #adminModal .product-editor p,
+html[data-theme="dark"] #adminModal .product-editor small,
+html[data-theme="dark"] #adminModal .product-editor .helper,
+html[data-theme="dark"] #adminModal .product-editor .hint,
+html[data-theme="dark"] #adminModal .product-editor .muted{
+  color:#aebfb4 !important;
+  -webkit-text-fill-color:#aebfb4 !important;
+  opacity:1 !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor input,
+html[data-theme="dark"] #adminModal .product-editor select,
+html[data-theme="dark"] #adminModal .product-editor textarea,
+html[data-theme="dark"] #adminModal #categorySearch{
+  background:#0e1712 !important;
+  color:#ffffff !important;
+  border:1px solid #385044 !important;
+  -webkit-text-fill-color:#ffffff !important;
+  caret-color:#58d48d !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor input::placeholder,
+html[data-theme="dark"] #adminModal .product-editor textarea::placeholder,
+html[data-theme="dark"] #adminModal #categorySearch::placeholder{
+  color:#8ea197 !important;
+  -webkit-text-fill-color:#8ea197 !important;
+  opacity:1 !important;
+}
+
+/* Bloco "Destino no aplicativo" */
+html[data-theme="dark"] #adminModal .category-map,
+html[data-theme="dark"] #adminModal .category-picker,
+html[data-theme="dark"] #adminModal .category-destination,
+html[data-theme="dark"] #adminModal .destination-card{
+  background:#152019 !important;
+  border:1px solid #31463a !important;
+}
+
+html[data-theme="dark"] #adminModal .category-map *,
+html[data-theme="dark"] #adminModal .category-picker *,
+html[data-theme="dark"] #adminModal .category-destination *,
+html[data-theme="dark"] #adminModal .destination-card *{
+  opacity:1;
+}
+
+html[data-theme="dark"] #adminModal #categoryPathPreview,
+html[data-theme="dark"] #adminModal #databasePathPreview{
+  background:#0f1813 !important;
+  color:#dff6e8 !important;
+  border-color:#31483b !important;
+}
+
+/* Badges como obrigatório e contagem de categorias */
+html[data-theme="dark"] #adminModal .required-badge,
+html[data-theme="dark"] #adminModal .category-count,
+html[data-theme="dark"] #adminModal .scanner-badge{
+  color:#7ee3a6 !important;
+  background:#183426 !important;
+  border-color:#2a5a3d !important;
+  -webkit-text-fill-color:#7ee3a6 !important;
+}
+
+/* ===== V15.13 - CONTRASTE TOTAL NO FORMULÁRIO ADM / DARK ===== */
+/* Corrige todos os textos claros sobre cartões claros, inclusive legendas
+   flutuantes, títulos de grupo, valores, selects e textos gerados via JS. */
+html[data-theme="dark"] #adminModal .product-editor,
+html[data-theme="dark"] #adminModal .product-editor fieldset,
+html[data-theme="dark"] #adminModal .product-editor section,
+html[data-theme="dark"] #adminModal .product-editor .form-section,
+html[data-theme="dark"] #adminModal .product-editor .form-group,
+html[data-theme="dark"] #adminModal .product-editor .category-map,
+html[data-theme="dark"] #adminModal .product-editor .category-picker,
+html[data-theme="dark"] #adminModal .product-editor .category-destination,
+html[data-theme="dark"] #adminModal .product-editor .destination-card {
+  background-color:#142019 !important;
+  border-color:#3a5545 !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor legend,
+html[data-theme="dark"] #adminModal .product-editor label,
+html[data-theme="dark"] #adminModal .product-editor .field-label,
+html[data-theme="dark"] #adminModal .product-editor .section-title,
+html[data-theme="dark"] #adminModal .product-editor .group-title,
+html[data-theme="dark"] #adminModal .product-editor .form-label,
+html[data-theme="dark"] #adminModal .product-editor h1,
+html[data-theme="dark"] #adminModal .product-editor h2,
+html[data-theme="dark"] #adminModal .product-editor h3,
+html[data-theme="dark"] #adminModal .product-editor h4,
+html[data-theme="dark"] #adminModal .product-editor h5,
+html[data-theme="dark"] #adminModal .product-editor strong,
+html[data-theme="dark"] #adminModal .product-editor b {
+  color:#f7fff9 !important;
+  -webkit-text-fill-color:#f7fff9 !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+}
+
+/* A aba/legenda flutuante "Identificação" e equivalentes */
+html[data-theme="dark"] #adminModal .product-editor legend,
+html[data-theme="dark"] #adminModal .product-editor .fieldset-title,
+html[data-theme="dark"] #adminModal .product-editor .section-chip {
+  background:#183426 !important;
+  color:#82e7a9 !important;
+  -webkit-text-fill-color:#82e7a9 !important;
+  border:1px solid #35654a !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor input,
+html[data-theme="dark"] #adminModal .product-editor select,
+html[data-theme="dark"] #adminModal .product-editor textarea,
+html[data-theme="dark"] #adminModal .product-editor [contenteditable="true"] {
+  background:#0b1510 !important;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  border-color:#405c4b !important;
+  opacity:1 !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor input::placeholder,
+html[data-theme="dark"] #adminModal .product-editor textarea::placeholder {
+  color:#a9bcb0 !important;
+  -webkit-text-fill-color:#a9bcb0 !important;
+  opacity:1 !important;
+}
+
+html[data-theme="dark"] #adminModal .product-editor p,
+html[data-theme="dark"] #adminModal .product-editor small,
+html[data-theme="dark"] #adminModal .product-editor span:not(.required-badge):not(.category-count),
+html[data-theme="dark"] #adminModal .product-editor .helper,
+html[data-theme="dark"] #adminModal .product-editor .hint,
+html[data-theme="dark"] #adminModal .product-editor .muted,
+html[data-theme="dark"] #adminModal .product-editor .description {
+  color:#b9c9bf !important;
+  -webkit-text-fill-color:#b9c9bf !important;
+  opacity:1 !important;
+}
+
+/* Em controles/brancos residuais, força texto escuro para nunca sumir */
+html[data-theme="dark"] #adminModal .product-editor .light-card,
+html[data-theme="dark"] #adminModal .product-editor .white-card {
+  background:#142019 !important;
+  color:#f7fff9 !important;
+}
+
+/* ===== V15.13 - CARRINHO LEGÍVEL NO TEMA ESCURO ===== */
+html[data-theme="dark"] #cartDrawer,
+html[data-theme="dark"] #cartDrawer .drawer-card,
+html[data-theme="dark"] #cartDrawer .cart-content{
+  background:#101a14 !important;
+  color:#ffffff !important;
+}
+html[data-theme="dark"] #cartDrawer h1,
+html[data-theme="dark"] #cartDrawer h2,
+html[data-theme="dark"] #cartDrawer h3,
+html[data-theme="dark"] #cartDrawer h4,
+html[data-theme="dark"] #cartDrawer strong,
+html[data-theme="dark"] #cartDrawer b,
+html[data-theme="dark"] #cartDrawer label{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  opacity:1 !important;
+}
+html[data-theme="dark"] #cartDrawer p,
+html[data-theme="dark"] #cartDrawer small,
+html[data-theme="dark"] #cartDrawer .muted,
+html[data-theme="dark"] #cartDrawer .cart-meta{
+  color:#b9c9bf !important;
+  -webkit-text-fill-color:#b9c9bf !important;
+  opacity:1 !important;
+}
+html[data-theme="dark"] #cartDrawer .mode-btn{
+  background:#18261e !important;
+  color:#eaf5ee !important;
+  -webkit-text-fill-color:#eaf5ee !important;
+  border:1px solid #385044 !important;
+}
+html[data-theme="dark"] #cartDrawer .mode-btn.active{
+  background:#e8f7ee !important;
+  color:#0a7b3d !important;
+  -webkit-text-fill-color:#0a7b3d !important;
+}
+html[data-theme="dark"] #cartDrawer input{
+  background:#0c1711 !important;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  border-color:#3b5547 !important;
+}
+html[data-theme="dark"] #cartDrawer input::placeholder{
+  color:#9caea3 !important;
+  -webkit-text-fill-color:#9caea3 !important;
+  opacity:1 !important;
+}
+
+/* ===== V15.13 - FORMAS DE PAGAMENTO ===== */
+.payment-methods{
+  margin-top:16px;
+  padding:14px;
+  border:1px solid #dce7e0;
+  border-radius:18px;
+}
+.payment-methods legend{
+  padding:0 8px;
+  font-weight:900;
+}
+.payment-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+.payment-option{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:72px;
+  padding:12px;
+  border:1px solid #dce7e0;
+  border-radius:15px;
+  background:#fff;
+  cursor:pointer;
+}
+.payment-option input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+.payment-option.active{
+  border-color:#0d934b;
+  box-shadow:0 0 0 2px rgba(13,147,75,.12);
+  background:#effaf3;
+}
+.payment-icon{font-size:22px}
+.payment-option b{display:block;font-size:12px}
+.payment-option small{display:block;margin-top:3px;font-size:9px}
+.cash-change-box{margin-top:10px}
+html[data-theme="dark"] .payment-methods,
+html[data-theme="dark"] .payment-option{
+  background:#152019 !important;
+  border-color:#33483c !important;
+  color:#f6fbf7 !important;
+}
+html[data-theme="dark"] .payment-option.active{
+  background:#183426 !important;
+  border-color:#39a969 !important;
+}
+html[data-theme="dark"] .payment-option b{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+html[data-theme="dark"] .payment-option small{
+  color:#abc0b3 !important;
+  -webkit-text-fill-color:#abc0b3 !important;
+}
+@media(max-width:520px){
+  .payment-grid{grid-template-columns:1fr}
+}
+
+/* ===== V15.13 - TOTAL DO CHECKOUT SEMPRE VISÍVEL ===== */
+#checkoutModal .checkout-total{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin:18px 0 12px !important;
+  padding:16px 18px !important;
+  border-radius:16px !important;
+  background:#eff8f2 !important;
+  border:1px solid #cfe5d7 !important;
+  color:#17311f !important;
+  font-size:16px !important;
+  font-weight:900 !important;
+}
+#checkoutModal .checkout-total strong{
+  color:#087b3d !important;
+  -webkit-text-fill-color:#087b3d !important;
+  font-size:24px !important;
+  font-weight:1000 !important;
+  opacity:1 !important;
+}
+html[data-theme="dark"] #checkoutModal .checkout-total{
+  background:#163021 !important;
+  border-color:#2d6845 !important;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+html[data-theme="dark"] #checkoutModal .checkout-total strong{
+  color:#35e47f !important;
+  -webkit-text-fill-color:#35e47f !important;
+  text-shadow:none !important;
+  opacity:1 !important;
 }
